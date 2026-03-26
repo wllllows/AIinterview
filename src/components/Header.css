@@ -1,6 +1,5 @@
 /* Header.css */
 
-/* 统一变量：采用首页同款科技蓝 */
 :root {
     --primary-blue: #3b82f6;
     /* 核心科技蓝 */
@@ -230,4 +229,9 @@
     .left {
         gap: 20px;
     }
+}
+
+.header-hidden {
+    transform: translateY(-100%);
+    box-shadow: none; 
 }
