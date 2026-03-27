@@ -1,24 +1,19 @@
 :root {
-    /* 品牌色 */
     --primary: #3b82f6;
     --primary-light: #eff6ff;
     --primary-dark: #2563eb;
 
-    /* 背景与边框 */
     --bg-app: rgba(15, 23, 42, 0.4);
     --bg-modal: rgba(255, 255, 255, 0.98);
     --bg-input: #f1f5f9;
     --border-light: #e2e8f0;
 
-    /* 文字颜色 */
     --text-main: #1e293b;
     --text-muted: #64748b;
 
-    /* 动效 */
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- 遮罩层与外壳 --- */
 .modal-overlay {
     position: fixed;
     inset: 0;

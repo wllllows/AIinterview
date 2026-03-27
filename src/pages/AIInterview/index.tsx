@@ -8,14 +8,13 @@ import {
     Sparkles,
     Send,
     User,
-    Pause,     // 新增
-    Play,      // 新增
-    Settings,  // 新增
-    X          // 新增
+    Pause,     
+    Play,      
+    Settings,  
+    X          
 } from 'lucide-react'
 import './index.css'
 
-// ... RecordItem 类型定义和 questions 保持不变 ...
 type RecordItem = {
     id: number
     type: 'ai' | 'user' | 'action' | 'score'
@@ -33,7 +32,6 @@ export default function Interview() {
     const [currentQ, setCurrentQ] = useState(0)
     const [input, setInput] = useState('')
     
-    // --- 新增状态 ---
     const [isPaused, setIsPaused] = useState(false)
     const [showSettings, setShowSettings] = useState(false)
     const [resolution, setResolution] = useState('1080p')
@@ -99,7 +97,6 @@ export default function Interview() {
                     <div className="floating-control-bar">
                         <button className="icon-btn" title="麦克风"><Mic size={20} /></button>
                         
-                        {/* 替换：摄像头 -> 暂停/继续 */}
                         <button 
                             className={`icon-btn ${isPaused ? 'active-orange' : ''}`} 
                             onClick={() => setIsPaused(!isPaused)}
@@ -114,7 +111,7 @@ export default function Interview() {
                         </button>
                     </div>
 
-                    {/* 新增：右侧设置按钮 */}
+                    {/* 右侧设置按钮 */}
                     <button 
                         className="settings-trigger" 
                         onClick={() => setShowSettings(true)}
@@ -122,7 +119,7 @@ export default function Interview() {
                         <Settings size={20} />
                     </button>
 
-                    {/* 新增：设置小窗口 */}
+                    {/* 设置小窗口 */}
                     {showSettings && (
                         <div className="settings-popover">
                             <div className="settings-header">

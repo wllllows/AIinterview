@@ -42,7 +42,7 @@ export default function BackToTop() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
-                zIndex: 90,
+                zIndex: 2000,
                 // 优雅的淡入淡出动画
                 opacity: isVisible ? 1 : 0,
                 visibility: isVisible ? 'visible' : 'hidden',

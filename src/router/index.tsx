@@ -6,6 +6,7 @@ import Questions from '../pages/Questions'
 import Community from '../pages/Community'
 import AIInterview from '../pages/AIInterview'
 import ArticleDetail from '../pages/ArticleDetail' // 1. 引入新页面
+import ProfileInfo from '../pages/ProfileInfo/ProfileInfo'
 
 const router = createBrowserRouter([
     {
@@ -28,11 +29,14 @@ const router = createBrowserRouter([
                 path: 'ai',
                 element: <AIInterview />,
             },
-            /* 2. 新增文章详情路由 */
             {
                 path: 'post/:id',
                 element: <ArticleDetail />,
             },
+            {
+                path: '/profile',
+                element: <ProfileInfo/>,
+            }
         ],
     },
 ])

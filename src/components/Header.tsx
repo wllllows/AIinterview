@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react'
 import './Header.css'
-import { NavLink, useNavigate } from 'react-router-dom' // 引入 useNavigate
+import { NavLink, useNavigate } from 'react-router-dom' 
 import { Bell, Search, User, PenSquare } from 'lucide-react'
-import InterviewModal from './InterviewModal' // 引入你的弹窗组件
-
+import InterviewModal from './InterviewModal' 
 export default function Header() {
     const [isVisible, setIsVisible] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false); // 控制弹窗显示
@@ -15,8 +14,10 @@ export default function Header() {
             const currentScrollY = window.scrollY;
             if (currentScrollY > lastScrollY && currentScrollY > 64) {
                 setIsVisible(false);
+                document.documentElement.style.setProperty('--header-height', '0px');
             } else {
                 setIsVisible(true);
+                document.documentElement.style.setProperty('--header-height', '64px');
             }
             lastScrollY = currentScrollY;
         };
@@ -42,9 +43,8 @@ export default function Header() {
                         </div>
                         <nav className="nav">
                             <NavLink to="/" end>首页</NavLink>
-                            <NavLink to="/questions">题库</NavLink>
+                            <NavLink to="/questions">错题本</NavLink>
                             <NavLink to="/community">社区</NavLink>
-                            {/* 修改这里：使用 onClick 拦截跳转 */}
                             <NavLink
                                 to="/ai"
                                 onClick={handleAIClick}
@@ -72,7 +72,9 @@ export default function Header() {
                         </div>
 
                         <div className="avatar">
-                            <User size={20} />
+                            <NavLink to="/profile">
+                                <User size={20} />
+                            </NavLink>
                         </div>
                     </div>
                 </div>

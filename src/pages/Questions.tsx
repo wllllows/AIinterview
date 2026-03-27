@@ -1,3 +1,3 @@
 export default function Questions() {
-    return <h1>题库</h1>
+    return <h1>错题本</h1>
 }

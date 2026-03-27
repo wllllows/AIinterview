@@ -5,13 +5,8 @@
     --text-black: #1d1d1f;
     --text-gray: #6e6e73;
     --border-thin: #f0f0f2;
-}
-
-/* ⚠️ 关键：不能有 overflow 限制 */
-html,
-body {
-    height: 100%;
-    overflow-x: hidden;
+    --header-height: 64px;
+    --gap-top: 20px;
 }
 
 /* ===== 页面布局 ===== */
@@ -24,19 +19,19 @@ body {
     background: var(--bg-gray);
     min-height: 100vh;
 
-    /* ✅ 关键：防止 flex 拉伸影响 sticky */
     align-items: flex-start;
 }
 
-/* ===== 左侧（已修复 sticky） ===== */
+/* ===== 左侧 ===== */
 .sidebar-left {
     width: 140px;
     flex-shrink: 0;
 
     position: sticky;
-    top: 84px;
-    /* Header高度64 + 间距 */
+    /* 当 Header 存在时是 64+20=84px，Header 隐藏时是 0+20=20px */
+    top: calc(var(--header-height) + var(--gap-top));
 
+    transition: top 0.3s ease;
     align-self: flex-start;
 }
 
@@ -185,14 +180,13 @@ body {
     opacity: 0.7;
 }
 
-/* ===== 右侧（已修复 sticky） ===== */
+/* ===== 右侧 ===== */
 .sidebar-right {
     width: 240px;
     flex-shrink: 0;
-
     position: sticky;
-    top: 84px;
-
+    top: calc(var(--header-height) + var(--gap-top));
+    transition: top 0.3s ease;
     align-self: flex-start;
 }
 
@@ -265,11 +259,8 @@ body {
     display: flex;
     gap: 10px;
 }
-.text-green {
-    color: #52c41a;
-}
 
-.grid-item {
+.text-green .grid-item {
     flex: 1;
     background: var(--bg-gray);
     padding: 8px;

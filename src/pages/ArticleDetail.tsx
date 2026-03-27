@@ -39,27 +39,26 @@ export default function ArticleDetail() {
                 });
             },
             {
-                rootMargin: '-100px 0px -70% 0px', // 判定高亮的触发区域
-                threshold: 0.5
+                rootMargin: '-80px 0px -50% 0px',
+                threshold: 0.1
             }
         );
 
         nodes?.forEach((node) => observer.observe(node));
         return () => observer.disconnect();
-    }, [id]);
+    }, [id, headings.length]); // 依赖文章 ID 和标题数量，确保切换文章时重新绑定观察
 
     // 3. 点击目录平滑跳转逻辑
     const scrollToHeading = (id: string) => {
         const element = document.getElementById(id);
         if (element) {
-            const headerOffset = 90; // 预留出 Header 的距离
-            const elementPosition = element.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
+            // 使用原生方法，behavior: 'smooth' 实现平滑滚动
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start' // 滚动到元素的顶部
             });
+
+            setActiveId(id);
         }
     };
 
@@ -91,16 +90,11 @@ export default function ArticleDetail() {
                         <header className="article-header">
                             <h1 className="article-title">如何优雅地实现 React 状态管理？深度解析 Zustand 与 Redux</h1>
                             <div className="article-meta">
-                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed=12" alt="author" className="author-avatar" />
-                                <div className="meta-info">
-                                    <div className="author-name">前端小白</div>
-                                    <div className="post-data">
-                                        <span>2024年03月27日</span>
-                                        <span className="dot">·</span>
-                                        <span>阅读 1.2k</span>
-                                    </div>
-                                </div>
-                                <button className="follow-btn">+ 关注</button>
+                                <span className="author-name">前端小白</span>
+                                <span className="dot">·</span>
+                                <span>2024年03月27日</span>
+                                <span className="dot">·</span>
+                                <span>阅读 1.2k</span>
                             </div>
                         </header>
 
@@ -119,10 +113,10 @@ export default function ArticleDetail() {
                             <div className="code-block">
                                 <div className="code-header"><span>typescript</span></div>
                                 <pre><code>{`import { create } from 'zustand'
-const useStore = create((set) => ({
-  bears: 0,
-  increase: () => set((state) => ({ bears: state.bears + 1 })),
-}))`}</code></pre>
+                                const useStore = create((set) => ({
+                                bears: 0,
+                                increase: () => set((state) => ({ bears: state.bears + 1 })),
+                                }))`}</code></pre>
                             </div>
 
                             <h2>3. 总结</h2>
@@ -154,22 +148,22 @@ const useStore = create((set) => ({
                 <aside className="article-sidebar">
                     <div className="toc-sticky-wrapper">
                         <div className="author-mini-card">
-                            <img src="https://api.dicebear.com/7.x/notionists/svg?seed=12" className="author-avatar-large" alt="" />
-                            <div className="author-info">
-                                <div className="name">前端小白</div>
-                                <div className="title">资深前端工程师</div>
+                            <div className="author-main-info">
+                                <img src="https://api.dicebear.com/7.x/notionists/svg?seed=12" className="author-avatar-large" alt="" />
+                                <div className="author-info">
+                                    <div className="name">前端小白</div>
+                                    <div className="title">资深前端工程师</div>
+                                </div>
                             </div>
+                            <button className="sidebar-follow-btn">+ 关注</button>
                         </div>
 
+                        {/* 目录部分保持不变 */}
                         <div className="toc-card">
                             <div className="toc-title">目录</div>
                             <ul className="toc-list">
                                 {headings.map((h) => (
-                                    <li
-                                        key={h.id}
-                                        className={`toc-item ${activeId === h.id ? 'active' : ''}`}
-                                        onClick={() => scrollToHeading(h.id)}
-                                    >
+                                    <li key={h.id} className={`toc-item ${activeId === h.id ? 'active' : ''}`} onClick={() => scrollToHeading(h.id)}>
                                         {h.text}
                                     </li>
                                 ))}
