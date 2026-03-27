@@ -1,0 +1,370 @@
+/* 局部变量声明 */
+.article-page {
+    --bg-gray: #f4f6f9;
+    --white: #ffffff;
+    --primary: #0066ff;
+    --text-black: #1d1d1f;
+    --text-gray: #6e6e73;
+    --border-thin: #e5e6eb;
+
+    background-color: var(--bg-gray);
+    min-height: 100vh;
+    padding-top: 20px;
+    padding-bottom: 80px;
+}
+
+.article-layout {
+    display: flex;
+    max-width: 1380px;
+    /* 🚀 核心修改 1：从 1200px 提升到 1380px，大幅增加文章区域宽度 */
+    margin: 0 auto;
+    gap: 24px;
+    align-items: flex-start;
+    /* 保持 flex-start 防止子元素被强行拉伸等高 */
+    padding: 0 20px;
+}
+
+/* ===== 左侧：悬浮操作栏 ===== */
+.article-side-actions {
+    width: 60px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 100px;
+}
+
+.action-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.action-btn {
+    width: 48px;
+    min-height: 48px;
+    padding: 10px 0;
+    border-radius: 24px;
+    background: var(--white);
+    border: none;
+    color: var(--text-gray);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn.active {
+    color: var(--primary);
+    background: #f0f7ff;
+}
+
+.action-btn .count {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.article-side-actions .divider {
+    width: 24px;
+    height: 1px;
+    background: var(--border-thin);
+}
+
+/* ===== 中间：文章主内容区域 ===== */
+.article-main {
+    flex: 1;
+    /* 占据巨大剩余空间 */
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.article-card,
+.comments-section-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 40px 60px;
+    /* 增加左右留白，让大宽屏下阅读更舒服 */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.article-header {
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border-thin);
+    padding-bottom: 24px;
+}
+
+.article-title {
+    font-size: 34px;
+    /* 稍微再放大一点标题 */
+    font-weight: 800;
+    color: var(--text-black);
+    line-height: 1.4;
+    margin-bottom: 24px;
+}
+
+.article-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.author-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.meta-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.author-name {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--text-black);
+}
+
+.post-data {
+    font-size: 13px;
+    color: var(--text-gray);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.follow-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    background: transparent;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.follow-btn:hover {
+    background: var(--primary);
+    color: #fff;
+}
+
+/* ===== Markdown 正文样式 ===== */
+.markdown-body {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #2c2c2e;
+}
+
+.markdown-body p {
+    margin-bottom: 16px;
+}
+
+.markdown-body h2 {
+    font-size: 24px;
+    margin: 40px 0 20px;
+    padding-bottom: 12px;
+    scroll-margin-top: 100px;
+}
+
+.markdown-body blockquote {
+    margin: 24px 0;
+    padding: 16px 24px;
+    background: #f8faff;
+    border-left: 4px solid var(--primary);
+    color: var(--text-gray);
+    font-style: italic;
+    border-radius: 0 8px 8px 0;
+}
+
+.code-block {
+    background: #282c34;
+    border-radius: 8px;
+    margin: 24px 0;
+    overflow: hidden;
+}
+
+.code-header {
+    background: #21252b;
+    padding: 8px 16px;
+    color: #abb2bf;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.code-block pre {
+    padding: 16px;
+    margin: 0;
+    color: #abb2bf;
+    font-family: 'Fira Code', monospace;
+    font-size: 14px;
+    overflow-x: auto;
+}
+
+/* ===== 右侧：侧边栏 ===== */
+.article-sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    /* 🚀 核心修改 2：把 sticky 属性直接放在整个侧边栏父容器上！ */
+    position: sticky;
+    top: 100px;
+    /* 使用 flex 布局让内部卡片保持间距 */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 之前加在这个 wrapper 上的 sticky 已经被移除，只保留布局作用 */
+.toc-sticky-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.author-mini-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.author-mini-card img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    object-fit: cover;
+}
+
+.author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow: hidden;
+}
+
+.author-info .name {
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--text-black);
+}
+
+.author-info .title {
+    font-size: 13px;
+    color: var(--text-gray);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.toc-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.toc-title {
+    font-weight: 700;
+    margin-bottom: 16px;
+    padding-left: 10px;
+    border-left: 4px solid var(--primary);
+    font-size: 15px;
+    color: var(--text-black);
+}
+
+.toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.toc-item {
+    padding: 8px 12px;
+    font-size: 14px;
+    color: var(--text-gray);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-left: 3px solid transparent;
+    margin-bottom: 4px;
+}
+
+.toc-item:hover {
+    background: #f8faff;
+    color: var(--primary);
+}
+
+.toc-item.active {
+    color: var(--primary);
+    background: #f0f7ff;
+    font-weight: 600;
+    border-left-color: var(--primary);
+    padding-left: 14px;
+}
+
+/* 底部点赞收尾 */
+.article-footer {
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px dotted var(--border-thin);
+}
+
+.tags-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.tag {
+    background: var(--bg-gray);
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 13px;
+    color: var(--text-gray);
+}
+
+.support-section {
+    display: flex;
+    justify-content: center;
+}
+
+.like-big-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 32px;
+    border-radius: 30px;
+    border: 1px solid var(--primary);
+    background: var(--white);
+    color: var(--primary);
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.like-big-btn:hover {
+    background: #f0f7ff;
+    transform: scale(1.05);
+}

@@ -5,11 +5,12 @@ import Home from '../pages/Home'
 import Questions from '../pages/Questions'
 import Community from '../pages/Community'
 import AIInterview from '../pages/AIInterview'
+import ArticleDetail from '../pages/ArticleDetail' // 1. 引入新页面
 
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <MainLayout />, // ✅ 布局
+        element: <MainLayout />,
         children: [
             {
                 index: true,
@@ -26,6 +27,11 @@ const router = createBrowserRouter([
             {
                 path: 'ai',
                 element: <AIInterview />,
+            },
+            /* 2. 新增文章详情路由 */
+            {
+                path: 'post/:id',
+                element: <ArticleDetail />,
             },
         ],
     },
