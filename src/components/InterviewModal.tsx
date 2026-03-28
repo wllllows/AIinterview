@@ -41,6 +41,7 @@ export default function InterviewModal({ open, onClose }: Props) {
     // 初始打开时随机生成一次
     useEffect(() => {
         if (open) generateRandomPersonalities();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [open]);
 
     if (!open) return null
@@ -49,7 +50,13 @@ export default function InterviewModal({ open, onClose }: Props) {
         onClose()
         // 传递性格标签数组
         const personalityLabels = form.personalities.map(p => p.label);
-        navigate('/ai', { state: { config: { ...form, personalities: personalityLabels } } })
+
+        // 🌟 核心修改点：直接跳转到沉浸式面试页，并把配置项作为 state 传过去
+        navigate('/interview/start', {
+            state: {
+                config: { ...form, personalities: personalityLabels }
+            }
+        })
     }
 
     return (

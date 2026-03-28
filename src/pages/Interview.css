@@ -1,0 +1,644 @@
+:root {
+    --primary-blue: #3b82f6;
+    --hover-blue: #2563eb;
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    /* 沉浸式深色变量 */
+    --video-bg-dark: #020617;
+}
+
+/* =========================================
+   1. 整体布局
+   ========================================= */
+.interview-page {
+    display: flex;
+    height: 100vh;
+    background: var(--video-bg-dark);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+.interview-main {
+    flex: 1;
+    padding: 0;
+    display: flex;
+    height: 100%;
+}
+
+/* =========================================
+   2. 沉浸式左侧视频区
+   ========================================= */
+.ai-video-full {
+    flex: 1;
+    height: 100%;
+    position: relative;
+    background: radial-gradient(circle at 50% 40%, #1e293b 0%, var(--video-bg-dark) 100%);
+    border-radius: 0px;
+    overflow: hidden;
+    border: none;
+}
+
+.ai-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    /* 呼吸光效 */
+    animation: breathe 4s ease-in-out infinite alternate;
+}
+
+.ai-status-text {
+    color: #94a3b8;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 2px;
+}
+
+@keyframes breathe {
+    from {
+        filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.1));
+    }
+
+    to {
+        filter: drop-shadow(0 0 30px rgba(96, 165, 250, 0.5));
+    }
+}
+
+/* 用户画中画镜头 */
+.user-video-pip {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    width: 240px;
+    height: 140px;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #cbd5e1;
+    font-size: 13px;
+    z-index: 10;
+}
+
+/* 暂停遮罩 */
+.pause-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pause-badge {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 12px 32px;
+    border-radius: 30px;
+    font-size: 16px;
+    letter-spacing: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   3. 底部玻璃控制栏 (Dock)
+   ========================================= */
+.floating-control-bar {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: saturate(180%) blur(20px);
+    padding: 12px 16px;
+    border-radius: 100px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    border: 1px solid rgba(203, 213, 225, 0.4);
+    z-index: 10;
+}
+
+.control-divider {
+    width: 1px;
+    height: 24px;
+    background-color: #cbd5e1;
+    margin: 0 4px;
+}
+
+.icon-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: none;
+    background: #f8fafc;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.icon-btn:hover {
+    background: #ffffff;
+    color: var(--primary-blue);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.icon-btn.muted {
+    color: #ef4444;
+    background: #fef2f2;
+}
+
+.icon-btn.active-orange {
+    color: #ea580c;
+    background: #ffedd5;
+}
+
+/* 红色结束面试按钮 */
+.danger-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 24px;
+    border: none;
+    border-radius: 24px;
+    background: #ef4444;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.danger-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+/* 设置弹出窗 */
+.settings-popover {
+    position: absolute;
+    bottom: 95px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 240px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    z-index: 20;
+    animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+.settings-header {
+    padding: 14px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 16px 16px 0 0;
+}
+
+.settings-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.setting-item label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.setting-item select {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+    outline: none;
+}
+
+.close-x {
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+/* =========================================
+   4. 右侧侧边栏：静态对话流
+   ========================================= */
+.interview-sidebar {
+    width: 340px;
+    /* 为了阅读长文本，加宽侧边栏 */
+    background: #ffffff;
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+    height: 100vh;
+    position: relative;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-header {
+    padding: 20px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    background: #ffffff;
+    flex-shrink: 0;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-main);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* 录音中的红点闪烁 */
+.recording-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+    }
+}
+
+/* 聊天记录区 */
+.record-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #f8fafc;
+    scrollbar-width: thin;
+}
+
+.record-list::after {
+    content: "";
+    display: block;
+    height: 100px;
+    /* 给底部留出空间，方便滚动到最后一条 */
+    flex-shrink: 0;
+}
+
+.record-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.record-list::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+
+.record-wrapper {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 系统提示条 */
+.system-message {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #e2e8f0;
+    color: #475569;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    margin: 8px 0;
+}
+
+.record-item {
+    max-width: 100%;
+}
+
+.record-item .label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.record-item .content {
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* AI 气泡 */
+.record-wrapper.ai {
+    align-items: flex-start;
+}
+
+.record-item.ai .content {
+    background: #ffffff;
+    color: var(--text-main);
+    border: 1px solid #e2e8f0;
+    border-top-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+/* 用户气泡 */
+.record-wrapper.user {
+    align-items: flex-end;
+}
+
+.record-item.user .label {
+    justify-content: flex-end;
+}
+
+.record-item.user .content {
+    background: var(--primary-blue);
+    color: #ffffff;
+    border-top-right-radius: 4px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+/* 打字/思考动画 */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 16px 20px !important;
+}
+
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.record-wrapper.analysis {
+    align-items: center;
+    margin: 8px 0 16px 0;
+}
+
+.record-item.analysis {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    width: 92%;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(167, 243, 208, 0.3);
+    animation: slideUpFade 0.5s ease-out;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #dcfce7;
+    border-bottom: 1px solid #bbf7d0;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.score-badge {
+    margin-left: auto;
+    background: #166534;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.analysis-content {
+    padding: 12px 16px;
+    color: #14532d;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.score-reveal-container {
+    display: flex;
+    justify-content: flex-end;
+    /* 让按钮紧贴着用户的聊天气泡右侧对齐 */
+    width: 100%;
+    margin-top: -16px;
+    /* 稍微向上提一点，和用户的气泡绑定得更紧密 */
+    margin-bottom: 12px;
+}
+
+.btn-reveal-score {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.btn-reveal-score:hover {
+    border-color: #3b82f6;
+    color: #3b82f6;
+    background: #eff6ff;
+    transform: translateY(-1px);
+}
+
+/* 展开后的分析卡片样式（沿用之前的薄荷绿） */
+.record-item.analysis {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 12px;
+    width: 90%;
+    margin: 12px auto 8px auto;
+    /* 展开后自动居中 */
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(167, 243, 208, 0.3);
+    animation: slideUpFade 0.4s ease-out;
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.analysis-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #dcfce7;
+    border-bottom: 1px solid #bbf7d0;
+    color: #166534;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.score-badge {
+    margin-left: auto;
+    background: #166534;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.analysis-content {
+    padding: 12px 16px;
+    color: #14532d;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+.interview-page {
+    display: flex;
+    /* 🌟 补丁：高度稍微多给 1px，并让它向上位移 1px，封死所有可能出现的白条 */
+    height: calc(100vh - var(--header-height, 64px) + 1px);
+    margin-top: -1px;
+
+    background: var(--video-bg-dark);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+}
+
+/* 确保主区域没有内边距破坏布局 */
+.interview-main {
+    flex: 1;
+    padding: 0 !important;
+    display: flex;
+    height: 100%;
+}

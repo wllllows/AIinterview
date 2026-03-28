@@ -8,6 +8,8 @@
 }
 
 .header {
+    box-sizing: border-box;
+
     height: 64px;
     background: var(--glass-bg);
     backdrop-filter: blur(16px) saturate(180%);
@@ -16,6 +18,8 @@
     top: 0;
     z-index: 1000;
     transition: all 0.3s ease;
+    margin: 0;
+    padding: 0;
 }
 
 .header-inner {
@@ -219,5 +223,5 @@
 
 .header-hidden {
     transform: translateY(-100%);
-    box-shadow: none; 
+    box-shadow: none;
 }

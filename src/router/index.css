@@ -1,13 +1,22 @@
+/* 修改你的全局 CSS */
 html {
-    height: auto;
+    height: 100%;
+    /* 🌟 从 auto 改为 100% */
     scroll-behavior: smooth;
 }
 
 body {
+    height: 100%;
+    /* 🌟 增加这一行，确保 body 也是满高 */
     min-height: 100vh;
     margin: 0;
     padding: 0;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     background-color: #f4f6f9;
+}
+
+/* 强制 root 容器也占满，防止内部 flex 失效 */
+#root {
+    height: 100%;
 }

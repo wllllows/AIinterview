@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import './Header.css'
-import { NavLink, useNavigate } from 'react-router-dom' 
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Bell, Search, User, PenSquare } from 'lucide-react'
-import InterviewModal from './InterviewModal' 
+import InterviewModal from './InterviewModal'
 export default function Header() {
     const [isVisible, setIsVisible] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false); // 控制弹窗显示
