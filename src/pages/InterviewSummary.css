@@ -7,10 +7,9 @@
 }
 
 /* =========================================
-   1. 页面全局：锁定高度，禁止整页滚动
+   1. 页面全局
    ========================================= */
 .summary-page {
-    /* 🌟 核心修改：固定高度为视口高度，禁止整页滚动 */
     height: 100vh;
     width: 100%;
     margin: 0;
@@ -20,11 +19,9 @@
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     color: var(--text-main);
     overflow: hidden;
-    /* 彻底切断外部滚动条 */
     position: relative;
 }
 
-/* 沿用你的魔法底层 */
 .summary-page::before {
     content: '';
     position: fixed;
@@ -71,33 +68,25 @@
 }
 
 /* =========================================
-   3. 核心双栏布局：独立滚动逻辑
+   3. 核心双栏布局
    ========================================= */
 .summary-layout {
     flex: 1;
-    /* 占据剩余的所有垂直空间 */
     display: flex;
     gap: 0;
-    /* 改为 0，通过内部 padding 控制间距 */
     padding: 20px 40px 40px 40px;
     overflow: hidden;
-    /* 关键：父容器不滚动 */
 }
 
-/* 提取公共的列样式 */
 .summary-left,
 .summary-right {
     flex: 1;
     height: 100%;
-    /* 🌟 核心修改：列内部超出时产生独立滚动条 */
     overflow-y: auto;
     padding: 10px 40px 100px 40px;
-    /* 底部预留 100px 间距，防止内容被 AI 按钮遮挡 */
     scrollbar-width: none;
-    /* 隐藏火狐滚动条 */
 }
 
-/* 隐藏 Chrome/Safari 滚动条，保持界面简洁 */
 .summary-left::-webkit-scrollbar,
 .summary-right::-webkit-scrollbar {
     display: none;
@@ -105,11 +94,10 @@
 
 .summary-left {
     border-right: 2px solid #f1f5f9;
-    /* 保持你的分割线 */
 }
 
 /* =========================================
-   4. 左侧：得分与雷达图 (保持你的精美样式)
+   4. 左侧：得分与雷达图 
    ========================================= */
 .score-header {
     display: flex;
@@ -142,7 +130,7 @@
 }
 
 /* =========================================
-   5. 列表与文字内容 (保持你的样式)
+   5. 列表与文字内容 
    ========================================= */
 .summary-list-section {
     margin-bottom: 40px;
@@ -176,10 +164,8 @@
 }
 
 .btn-ai-chat {
-    /* 🌟 核心修改：改为浅蓝色背景 */
     background-color: #f0f9ff;
     color: #0369a1;
-    /* 深蓝色的文字，保证对比度 */
     border: 1px solid #bae6fd;
 
     display: flex;
@@ -191,18 +177,15 @@
     font-weight: 600;
     cursor: pointer;
 
-    /* 蓝色柔和阴影 */
     box-shadow: 0 10px 20px rgba(186, 230, 253, 0.4);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn-ai-chat .ai-icon {
     color: #3b82f6;
-    /* 图标稍亮一点 */
 }
 
 .btn-ai-chat:hover {
-    /* 悬浮时变成更有活力的蓝色 */
     background-color: #3b82f6;
     color: #ffffff;
     border-color: #3b82f6;
@@ -214,7 +197,6 @@
     color: #ffffff;
 }
 
-/* 淡入动画 */
 .fade-in {
     animation: summaryFadeIn 0.8s ease-out forwards;
 }
@@ -239,9 +221,7 @@
     overflow: hidden;
 }
 
-/* 优化列表项的视觉高度 */
 .custom-list li {
     background: rgba(248, 250, 252, 0.5);
-    /* 增加透明感 */
     backdrop-filter: blur(4px);
 }

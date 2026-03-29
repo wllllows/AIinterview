@@ -17,7 +17,6 @@ export default function InterviewSummary() {
     return (
         <div className="summary-page">
 
-            {/* 顶部返回键 - 固定在顶部 */}
             <header className="summary-header">
                 <button className="back-home-btn" onClick={() => navigate('/')}>
                     <ChevronLeft size={18} />
@@ -25,10 +24,8 @@ export default function InterviewSummary() {
                 </button>
             </header>
 
-            {/* 核心内容区 - 内部滚动 */}
             <div className="summary-layout">
 
-                {/* 左侧：数据看板区 */}
                 <div className="summary-column summary-left fade-in">
                     <div className="score-header">
                         <span className="score-title">面试总得分</span>
@@ -80,9 +77,8 @@ export default function InterviewSummary() {
                 </div>
             </div>
 
-            {/* 🌟 悬浮 AI 按钮 - 使用 fixed 定位 */}
             <div className="summary-actions">
-                <button className="btn-ai-chat">
+                <button className="btn-ai-chat" onClick={() => navigate('/interview/review')}>
                     <Sparkles size={18} className="ai-icon" />
                     <span>与 AI 深度复盘</span>
                     <ChevronRight size={18} />

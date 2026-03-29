@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import {
     Sparkles, Monitor, Server, BrainCircuit, Blocks,
-    Eye, ThumbsUp, Flame, BarChart3, Hash, MessageSquare, Clock, Loader2
+    Eye, ThumbsUp, Flame, BarChart3, Hash, MessageSquare, Loader2
 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import './Community.css'

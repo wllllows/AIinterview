@@ -5,7 +5,6 @@
     --border-color: #e2e8f0;
     --text-main: #0f172a;
     --text-muted: #64748b;
-    /* 沉浸式深色变量 */
     --video-bg-dark: #020617;
 }
 
@@ -30,7 +29,7 @@
 }
 
 /* =========================================
-   2. 沉浸式左侧视频区
+   2. 左侧视频区
    ========================================= */
 .ai-video-full {
     flex: 1;
@@ -51,7 +50,6 @@
     flex-direction: column;
     align-items: center;
     gap: 16px;
-    /* 呼吸光效 */
     animation: breathe 4s ease-in-out infinite alternate;
 }
 
@@ -273,7 +271,6 @@
    ========================================= */
 .interview-sidebar {
     width: 340px;
-    /* 为了阅读长文本，加宽侧边栏 */
     background: #ffffff;
     border-left: 1px solid var(--border-color);
     display: flex;
@@ -344,7 +341,6 @@
     content: "";
     display: block;
     height: 100px;
-    /* 给底部留出空间，方便滚动到最后一条 */
     flex-shrink: 0;
 }
 
@@ -538,10 +534,8 @@
 .score-reveal-container {
     display: flex;
     justify-content: flex-end;
-    /* 让按钮紧贴着用户的聊天气泡右侧对齐 */
     width: 100%;
     margin-top: -16px;
-    /* 稍微向上提一点，和用户的气泡绑定得更紧密 */
     margin-bottom: 12px;
 }
 
@@ -625,7 +619,6 @@
 
 .interview-page {
     display: flex;
-    /* 🌟 补丁：高度稍微多给 1px，并让它向上位移 1px，封死所有可能出现的白条 */
     height: calc(100vh - var(--header-height, 64px) + 1px);
     margin-top: -1px;
 
@@ -635,7 +628,6 @@
     overflow: hidden;
 }
 
-/* 确保主区域没有内边距破坏布局 */
 .interview-main {
     flex: 1;
     padding: 0 !important;

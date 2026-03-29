@@ -1,0 +1,437 @@
+:root {
+    --bg-light: #f8fafc;
+    --border-color: #e2e8f0;
+    --primary-blue: #3b82f6;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+}
+
+.mb-container {
+    height: calc(100vh - 64px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: transparent;
+}
+
+/* ================= 头部 (列表与详情) ================= */
+.mb-header {
+    padding: 16px 40px;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.mb-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    transition: color 0.2s;
+}
+
+.mb-back-btn:hover {
+    color: var(--primary-blue);
+}
+
+.mb-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+/* ================= 状态1&2：列表与详情共用样式 ================= */
+.mb-list-view,
+.mb-detail-view {
+    flex: 1;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 20px 60px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    scrollbar-width: none;
+}
+
+.mb-list-view::-webkit-scrollbar,
+.mb-detail-view::-webkit-scrollbar {
+    display: none;
+}
+
+.mb-card,
+.mb-explanation-box {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.mb-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 6px;
+    margin-bottom: 12px;
+}
+
+.mb-tag.red {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.mb-card-q p,
+.mb-card-a p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 20px 0;
+}
+
+.wrong-text {
+    color: #ef4444;
+    text-decoration: line-through;
+    opacity: 0.8;
+}
+
+.mb-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 16px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.mb-btn-outline,
+.mb-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mb-btn-outline {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.mb-btn-outline:hover {
+    background: #f8fafc;
+    color: var(--text-main);
+}
+
+.mb-btn-outline.blue {
+    border-color: #bae6fd;
+    color: var(--primary-blue);
+    background: #f0f9ff;
+}
+
+.mb-btn-outline.blue:hover {
+    border-color: var(--primary-blue);
+}
+
+.mb-btn-primary {
+    background: var(--text-main);
+    border: 1px solid var(--text-main);
+    color: #ffffff;
+}
+
+.mb-btn-primary:hover {
+    background: #000000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.explanation-section {
+    margin-bottom: 24px;
+}
+
+.explanation-section h4 {
+    font-size: 15px;
+    margin: 0 0 8px 0;
+}
+
+.green-text {
+    color: #059669;
+}
+
+.explanation-section p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #334155;
+    margin: 0;
+}
+
+/* ================= 状态 3: AI 分栏布局  ================= */
+.mb-chat-layout {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    background: #ffffff;
+}
+
+/* == 左侧侧边栏布局 == */
+.mb-chat-sidebar {
+    width: 340px;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    background: #f8fafc;
+}
+
+.mb-sidebar-header {
+    padding: 24px 24px 8px 24px;
+    flex-shrink: 0;
+}
+
+.mb-minimal-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    padding: 8px 16px 8px 10px;
+    border-radius: 100px;
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.mb-minimal-back:hover {
+    color: var(--primary-blue);
+    border-color: #bfdbfe;
+    background-color: #f0f9ff;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.mb-sidebar-content {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    padding: 12px 24px 32px 24px;
+}
+
+.mb-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 24px 0;
+}
+
+/* == 右侧主聊天区 == */
+.mb-chat-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    background-color: #ffffff;
+}
+
+.mb-chat-history {
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+    scrollbar-width: none;
+}
+
+.mb-chat-history::-webkit-scrollbar {
+    display: none;
+}
+
+.mb-chat-center {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px 40px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 空状态 */
+.mb-empty-state {
+    margin: auto;
+    text-align: center;
+}
+
+.mb-empty-state .empty-icon {
+    color: #93c5fd;
+    margin-bottom: 20px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.mb-empty-state h2 {
+    font-size: 32px;
+    color: #cbd5e1;
+    margin: 0 0 12px 0;
+    letter-spacing: 2px;
+}
+
+.mb-empty-state p {
+    color: #94a3b8;
+    font-size: 15px;
+}
+
+/* 气泡样式 */
+.mb-chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+}
+
+.mb-bubble-wrap {
+    display: flex;
+    gap: 12px;
+}
+
+.mb-bubble-wrap.user {
+    justify-content: flex-end;
+}
+
+.mb-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: var(--primary-blue);
+    flex-shrink: 0;
+}
+
+.mb-bubble {
+    max-width: 75%;
+    padding: 14px 18px;
+    font-size: 15px;
+    line-height: 1.6;
+    border-radius: 12px;
+}
+
+.user .mb-bubble {
+    background: #f1f5f9;
+    color: var(--text-main);
+    border-bottom-right-radius: 4px;
+}
+
+.ai .mb-bubble {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+/* 底部输入框 */
+.mb-chat-input-area {
+    flex-shrink: 0;
+    width: 100%;
+    background-color: #ffffff;
+    border-top: 1px solid var(--border-color);
+    padding: 16px 20px 24px 20px;
+    z-index: 10;
+}
+
+.mb-input-box {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    display: flex;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+}
+
+.mb-input-box:focus-within {
+    border-color: var(--primary-blue);
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+}
+
+.mb-input-box textarea {
+    flex: 1;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 16px 60px 16px 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    font-family: inherit;
+    background: transparent;
+    max-height: 200px;
+}
+
+.mb-send-btn {
+    position: absolute;
+    bottom: 10px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f1f5f9;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.mb-send-btn.active {
+    background: #1e293b;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.mb-send-btn.active:hover {
+    background: var(--primary-blue);
+    transform: translateY(-2px);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}

@@ -2,12 +2,13 @@ import { createBrowserRouter, Navigate } from 'react-router-dom'
 import MainLayout from '../layout/MainLayout'
 
 import Home from '../pages/Home'
-import Questions from '../pages/Questions'
+import Mistakesbook from '../pages/Mistakesbook'
 import Community from '../pages/Community'
 import ArticleDetail from '../pages/ArticleDetail'
 import ProfileInfo from '../pages/ProfileInfo'
 import Interview from '../pages/Interview'
 import InterviewSummary from '../pages/InterviewSummary'
+import AIReview from '../pages/AIReview'
 
 const router = createBrowserRouter([
     {
@@ -19,8 +20,8 @@ const router = createBrowserRouter([
                 element: <Home />,
             },
             {
-                path: 'questions',
-                element: <Questions />,
+                path: 'mistakesbook',
+                element: <Mistakesbook />,
             },
             {
                 path: 'community',
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
     {
         path: '/interview/summary',
         element: <InterviewSummary />, 
+    },
+    {
+        path: '/interview/review',
+        element: <AIReview />,
     }
 ])
 

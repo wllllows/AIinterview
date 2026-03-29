@@ -1,3 +1,0 @@
-export default function Questions() {
-    return <h1>错题本</h1>
-}

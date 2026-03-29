@@ -51,7 +51,6 @@ export default function InterviewModal({ open, onClose }: Props) {
         // 传递性格标签数组
         const personalityLabels = form.personalities.map(p => p.label);
 
-        // 🌟 核心修改点：直接跳转到沉浸式面试页，并把配置项作为 state 传过去
         navigate('/interview/start', {
             state: {
                 config: { ...form, personalities: personalityLabels }

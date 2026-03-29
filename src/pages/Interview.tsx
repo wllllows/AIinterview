@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Mic,
@@ -10,7 +10,7 @@ import {
     Sparkles,
     User,
     Clock,
-    PhoneOff, // 用于挂断/结束面试的图标
+    PhoneOff, 
     Wifi,
     ClipboardCheck,
     ChevronDown
@@ -63,15 +63,12 @@ export default function Interview() {
 
     const handleEndInterview = () => {
         if (window.confirm("确定要结束当前的面试并生成分析报告吗？")) {
-            // 🌟 这里执行真正的跳转
             navigate('/interview/summary');
         }
     };
     useEffect(() => {
-        // 进入面试，全身变黑
         document.body.style.backgroundColor = '#020617';
         return () => {
-            // 离开面试，恢复默认
             document.body.style.backgroundColor = '#f4f6f9';
         };
     }, []);
@@ -202,7 +199,6 @@ export default function Interview() {
                             {item.type === 'score_trigger' && (
                                 <div className="score-reveal-container">
                                     {!revealedScores.includes(item.id) ? (
-                                        // 没展开时：显示一个小巧的按钮
                                         <button
                                             className="btn-reveal-score"
                                             onClick={() => handleRevealScore(item.id)}
@@ -212,7 +208,6 @@ export default function Interview() {
                                             <ChevronDown size={14} />
                                         </button>
                                     ) : (
-                                        // 展开后：显示那张薄荷绿的分析卡片
                                         <div className="record-item analysis">
                                             <div className="analysis-header">
                                                 <ClipboardCheck size={16} />

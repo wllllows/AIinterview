@@ -43,7 +43,7 @@ export default function Header() {
                         </div>
                         <nav className="nav">
                             <NavLink to="/" end>首页</NavLink>
-                            <NavLink to="/questions">错题本</NavLink>
+                            <NavLink to="/mistakesbook">错题本</NavLink>
                             <NavLink to="/community">社区</NavLink>
                             <NavLink
                                 to="/ai"
