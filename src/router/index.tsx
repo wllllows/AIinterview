@@ -1,5 +1,6 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import MainLayout from '../layout/MainLayout'
+import Login from '../pages/Login'
 
 import Home from '../pages/Home'
 import Mistakesbook from '../pages/Mistakesbook'
@@ -13,6 +14,14 @@ import AIReview from '../pages/AIReview'
 const router = createBrowserRouter([
     {
         path: '/',
+        element: <Navigate to="/login" replace />
+    },
+    {
+        path: '/login',
+        element: <Login />, 
+    },
+    {
+        path: '/app',
         element: <MainLayout />, 
         children: [
             {
@@ -37,7 +46,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'ai',
-                element: <Navigate to="/" replace />
+                element: <Navigate to="/app" replace />
             }
         ],
     },
@@ -53,6 +62,10 @@ const router = createBrowserRouter([
     {
         path: '/interview/review',
         element: <AIReview />,
+    },
+    {
+        path: '*',
+        element: <Navigate to="/login" replace />
     }
 ])
 

@@ -38,15 +38,15 @@ export default function Header() {
             <header className={`header ${isVisible ? '' : 'header-hidden'}`}>
                 <div className="header-inner">
                     <div className="left">
-                        <div className="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
+                        <div className="logo" onClick={() => navigate('/app')} style={{ cursor: 'pointer' }}>
                             AIInterview
                         </div>
                         <nav className="nav">
-                            <NavLink to="/" end>首页</NavLink>
-                            <NavLink to="/mistakesbook">错题本</NavLink>
-                            <NavLink to="/community">社区</NavLink>
+                            <NavLink to="/app" end>首页</NavLink>
+                            <NavLink to="/app/mistakesbook">错题本</NavLink>
+                            <NavLink to="/app/community">社区</NavLink>
                             <NavLink
-                                to="/ai"
+                                to="/app/ai"
                                 onClick={handleAIClick}
                                 className={({ isActive }) => isActive ? 'active' : ''}
                             >
@@ -72,7 +72,7 @@ export default function Header() {
                         </div>
 
                         <div className="avatar">
-                            <NavLink to="/profile">
+                            <NavLink to="/app/profile">
                                 <User size={20} />
                             </NavLink>
                         </div>
