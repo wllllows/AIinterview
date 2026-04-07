@@ -5,6 +5,8 @@ import './Home.css';
 export default function Home() {
   const [currentView, setCurrentView] = useState<'home' | 'profile'>('home');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [profileCompleted, setProfileCompleted] = useState(false);
   
   // 表单状态
   const [formData, setFormData] = useState({
@@ -21,22 +23,53 @@ export default function Home() {
     setIsAnimating(true);
     setTimeout(() => {
       setCurrentView('profile');
-      window.scrollTo(0, 0);
-    }, 300);
-  };
-
-  const handleBackToHome = () => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentView('home');
       setIsAnimating(false);
       window.scrollTo(0, 0);
-    }, 300);
+    }, 50);
+  };
+
+  const handleBackToHome = (scrollToFeatures = false) => {
+    setIsAnimating(true);
+    // 先启动画（页面左滑）
+    setTimeout(() => {
+      setCurrentView('home');
+      // 动画完成后重置状态
+      setTimeout(() => {
+        setIsAnimating(false);
+        // 如果需要，滚动到功能区域
+        if (scrollToFeatures) {
+          setTimeout(() => {
+            const target = document.getElementById('features');
+            if (target) {
+              const targetY = target.offsetTop - 80;
+              const startY = window.scrollY;
+              const distance = targetY - startY;
+              const duration = 800;
+              const startTime = performance.now();
+              const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+              
+              const scroll = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                window.scrollTo(0, startY + distance * easeOutCubic(progress));
+                if (progress < 1) requestAnimationFrame(scroll);
+              };
+              requestAnimationFrame(scroll);
+            }
+          }, 100);
+        }
+      }, 500);
+    }, 50);
   };
 
   const handleSubmit = () => {
-    alert('资料提交成功！');
-    handleBackToHome();
+    setShowSuccessModal(true);
+    setProfileCompleted(true);
+    // 1.5秒后关闭弹窗并返回首页，同时滚动到功能区域
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      handleBackToHome(true); // true 表示返回后滚动到功能区域
+    }, 1500);
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -210,14 +243,34 @@ export default function Home() {
 
         <div className="features-grid">
           {/* Profile */}
-          <div className="feature-card" onClick={handleGoToProfile} style={{ cursor: 'pointer' }}>
+          <div className="feature-card" onClick={handleGoToProfile} style={{ cursor: 'pointer', position: 'relative' }}>
+            {profileCompleted && (
+              <div style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 10px',
+                backgroundColor: '#dcfce7',
+                color: '#16a34a',
+                fontSize: '12px',
+                fontWeight: 600,
+                borderRadius: '20px',
+                border: '1px solid #86efac',
+              }}>
+                <CheckCircle size={12} />
+                已完成
+              </div>
+            )}
             <div className="feature-icon blue">
               <UserCog className="w-6 h-6" />
             </div>
             <h3 className="feature-title">资料完善</h3>
             <p className="feature-desc">上传简历，设置目标公司和岗位</p>
             <div className="feature-link blue">
-              <span>去完善</span>
+              <span>{profileCompleted ? '查看/修改' : '去完善'}</span>
               <ChevronRight className="w-4 h-4" />
             </div>
           </div>
@@ -933,6 +986,99 @@ export default function Home() {
             </button>
           </div>
         </main>
+
+        {/* 成功提交弹窗 */}
+        {showSuccessModal && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 200,
+            animation: 'fadeIn 0.3s ease-out',
+          }}>
+            <div style={{
+              backgroundColor: '#fff',
+              borderRadius: '20px',
+              padding: '40px 48px',
+              textAlign: 'center',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              maxWidth: '360px',
+              width: '90%',
+            }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '50%',
+                backgroundColor: '#dcfce7',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+              }}>
+                <CheckCircle size={36} style={{ color: '#16a34a' }} />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: 600,
+                color: '#1e293b',
+                marginBottom: '8px',
+              }}>
+                提交成功！
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: '#64748b',
+                marginBottom: '24px',
+              }}>
+                您的资料已成功保存
+              </p>
+              <div style={{
+                width: '100%',
+                height: '4px',
+                backgroundColor: '#e2e8f0',
+                borderRadius: '2px',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%',
+                  backgroundColor: '#3b82f6',
+                  borderRadius: '2px',
+                  animation: 'progress 1.5s ease-out forwards',
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 弹窗动画样式 */}
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { 
+              opacity: 0;
+              transform: translateY(30px) scale(0.95);
+            }
+            to { 
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+          }
+        `}</style>
       </div>
     </div>
   );
