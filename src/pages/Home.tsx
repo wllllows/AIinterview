@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ArrowRight, CheckCircle, UserCircle, ChevronRight, FileText, Video, GitBranch, BarChart2, Monitor, Users, Building2, TrendingUp, Target, PhoneOff, Mic, UserCog, Code, Briefcase, Share2, Upload, ArrowLeft } from 'lucide-react';
+import { ArrowRight, CheckCircle, UserCircle, ChevronRight, FileText, Video, GitBranch, BarChart2, Monitor, Users, Building2, TrendingUp, Target, PhoneOff, Mic, UserCog, Code, Briefcase, Share2, Upload, ArrowLeft, X } from 'lucide-react';
 import './Home.css';
 
 export default function Home() {
@@ -7,6 +7,8 @@ export default function Home() {
   const [isAnimating, setIsAnimating] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [profileCompleted, setProfileCompleted] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   // 表单状态
   const [formData, setFormData] = useState({
@@ -83,7 +85,7 @@ export default function Home() {
     <div className="home-container" style={{ overflow: 'hidden' }}>
       {/* Hero Section */}
       <section className="hero-gradient">
-        <div className="hero-section">
+        <div className="hero-section" style={{ position: 'relative' }}>
           <div className="hero-content">
             <div className="hero-badge">
               <span className="badge-pulse">
@@ -136,7 +138,16 @@ export default function Home() {
                 <span>开始模拟面试</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <button className="btn-secondary">
+              <button 
+                className="btn-secondary"
+                onClick={() => {
+                  setShowVideo(true);
+                  // 自动播放视频
+                  setTimeout(() => {
+                    videoRef.current?.play();
+                  }, 600);
+                }}
+              >
                 观看演示
               </button>
             </div>
@@ -158,7 +169,14 @@ export default function Home() {
           </div>
 
           {/* Hero Image/Demo */}
-          <div className="hero-demo">
+          <div 
+            className="hero-demo"
+            style={{
+              transform: showVideo ? 'translateY(-120%)' : 'translateY(0)',
+              opacity: showVideo ? 0 : 1,
+              transition: 'transform 600ms cubic-bezier(0.33, 1, 0.68, 1), opacity 400ms ease-out',
+            }}
+          >
             <div className="demo-card">
               <div className="demo-header">
                 <div className="traffic-lights">
@@ -231,6 +249,76 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* 视频展示区 - 从底部滑入 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              padding: '20px 40px 20px 20px',
+              transform: showVideo ? 'translateY(0)' : 'translateY(120%)',
+              opacity: showVideo ? 1 : 0,
+              transition: 'transform 600ms cubic-bezier(0.33, 1, 0.68, 1) 200ms, opacity 400ms ease-out 300ms',
+              pointerEvents: showVideo ? 'auto' : 'none',
+            }}
+          >
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '640px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              backgroundColor: '#000',
+            }}>
+              {/* 关闭按钮 */}
+              <button
+                onClick={() => {
+                  setShowVideo(false);
+                  videoRef.current?.pause();
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  zIndex: 10,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'}
+              >
+                <X size={20} />
+              </button>
+              
+              <video
+                ref={videoRef}
+                src="/src/assets/introduce_video.mp4"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block',
+                }}
+                controls
+                playsInline
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -261,7 +349,7 @@ export default function Home() {
                 border: '1px solid #86efac',
               }}>
                 <CheckCircle size={12} />
-                已完成
+                已完成<br />下一步👉
               </div>
             )}
             <div className="feature-icon blue">
@@ -613,7 +701,7 @@ export default function Home() {
             justifyContent: 'space-between',
           }}>
             <button 
-              onClick={handleBackToHome}
+              onClick={() => handleBackToHome()}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -934,7 +1022,7 @@ export default function Home() {
             padding: '16px 0',
           }}>
             <button
-              onClick={handleBackToHome}
+              onClick={() => handleBackToHome()}
               style={{
                 flex: 1,
                 padding: '14px 24px',
