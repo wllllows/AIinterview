@@ -1,12 +1,91 @@
-import { ArrowRight, CheckCircle, UserCircle, ChevronRight, FileText, Video, GitBranch, BarChart2, Monitor, Users, Building2, TrendingUp, Target, PhoneOff, Mic, UserCog, Code, Briefcase, Share2 } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ArrowRight, CheckCircle, UserCircle, ChevronRight, FileText, Video, GitBranch, BarChart2, Monitor, Users, Building2, TrendingUp, Target, PhoneOff, Mic, UserCog, Code, Briefcase, Share2, Upload, ArrowLeft, X } from 'lucide-react';
 import './Home.css';
 
 export default function Home() {
+  const [currentView, setCurrentView] = useState<'home' | 'profile'>('home');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [profileCompleted, setProfileCompleted] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // 表单状态
+  const [formData, setFormData] = useState({
+    name: '',
+    gender: 'male',
+    age: '',
+    city: '',
+    education: 'bachelor',
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+
+  const handleGoToProfile = () => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentView('profile');
+      setIsAnimating(false);
+      window.scrollTo(0, 0);
+    }, 50);
+  };
+
+  const handleBackToHome = (scrollToFeatures = false) => {
+    setIsAnimating(true);
+    // 先启动画（页面左滑）
+    setTimeout(() => {
+      setCurrentView('home');
+      // 动画完成后重置状态
+      setTimeout(() => {
+        setIsAnimating(false);
+        // 如果需要，滚动到功能区域
+        if (scrollToFeatures) {
+          setTimeout(() => {
+            const target = document.getElementById('features');
+            if (target) {
+              const targetY = target.offsetTop - 80;
+              const startY = window.scrollY;
+              const distance = targetY - startY;
+              const duration = 800;
+              const startTime = performance.now();
+              const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+              
+              const scroll = (currentTime: number) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                window.scrollTo(0, startY + distance * easeOutCubic(progress));
+                if (progress < 1) requestAnimationFrame(scroll);
+              };
+              requestAnimationFrame(scroll);
+            }
+          }, 100);
+        }
+      }, 500);
+    }, 50);
+  };
+
+  const handleSubmit = () => {
+    setShowSuccessModal(true);
+    setProfileCompleted(true);
+    // 1.5秒后关闭弹窗并返回首页，同时滚动到功能区域
+    setTimeout(() => {
+      setShowSuccessModal(false);
+      handleBackToHome(true); // true 表示返回后滚动到功能区域
+    }, 1500);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setUploadedFile(file);
+    }
+  };
+
   return (
-    <div>
+    <div className="home-container" style={{ overflow: 'hidden' }}>
       {/* Hero Section */}
       <section className="hero-gradient">
-        <div className="hero-section">
+        <div className="hero-section" style={{ position: 'relative' }}>
           <div className="hero-content">
             <div className="hero-badge">
               <span className="badge-pulse">
@@ -26,11 +105,49 @@ export default function Home() {
             </p>
 
             <div className="hero-buttons">
-              <button className="btn-primary">
+              <button 
+                className="btn-primary"
+                onClick={() => {
+                  const target = document.getElementById('features');
+                  if (target) {
+                    const targetY = target.offsetTop - 80; // 预留 header 空间
+                    const startY = window.scrollY;
+                    const distance = targetY - startY;
+                    const duration = 800; // 动画时长 ms
+                    const startTime = performance.now();
+                    
+                    // ease-out-cubic 缓动函数
+                    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+                    
+                    const scroll = (currentTime: number) => {
+                      const elapsed = currentTime - startTime;
+                      const progress = Math.min(elapsed / duration, 1);
+                      const eased = easeOutCubic(progress);
+                      
+                      window.scrollTo(0, startY + distance * eased);
+                      
+                      if (progress < 1) {
+                        requestAnimationFrame(scroll);
+                      }
+                    };
+                    
+                    requestAnimationFrame(scroll);
+                  }
+                }}
+              >
                 <span>开始模拟面试</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
-              <button className="btn-secondary">
+              <button 
+                className="btn-secondary"
+                onClick={() => {
+                  setShowVideo(true);
+                  // 自动播放视频
+                  setTimeout(() => {
+                    videoRef.current?.play();
+                  }, 600);
+                }}
+              >
                 观看演示
               </button>
             </div>
@@ -52,7 +169,14 @@ export default function Home() {
           </div>
 
           {/* Hero Image/Demo */}
-          <div className="hero-demo">
+          <div 
+            className="hero-demo"
+            style={{
+              transform: showVideo ? 'translateY(-120%)' : 'translateY(0)',
+              opacity: showVideo ? 0 : 1,
+              transition: 'transform 600ms cubic-bezier(0.33, 1, 0.68, 1), opacity 400ms ease-out',
+            }}
+          >
             <div className="demo-card">
               <div className="demo-header">
                 <div className="traffic-lights">
@@ -84,7 +208,7 @@ export default function Home() {
                   <div className="msg-avatar user">👤</div>
                   <div className="msg-content">
                     <div className="msg-bubble user">
-                      <p>您好，我毕业于清华大学计算机系，有3年后端开发经验。我选择字节是因为...</p>
+                      <p>您好，我毕业于杭州电子科技大学计算机系，有3年后端开发经验。我选择字节是因为...</p>
                     </div>
                     <div className="msg-meta user">
                       <span>您 · 正在回答</span>
@@ -125,6 +249,76 @@ export default function Home() {
               </div>
             </div>
           </div>
+
+          {/* 视频展示区 - 从底部滑入 */}
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: '50%',
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'flex-start',
+              padding: '20px 40px 20px 20px',
+              transform: showVideo ? 'translateY(0)' : 'translateY(120%)',
+              opacity: showVideo ? 1 : 0,
+              transition: 'transform 600ms cubic-bezier(0.33, 1, 0.68, 1) 200ms, opacity 400ms ease-out 300ms',
+              pointerEvents: showVideo ? 'auto' : 'none',
+            }}
+          >
+            <div style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '640px',
+              borderRadius: '16px',
+              overflow: 'hidden',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              backgroundColor: '#000',
+            }}>
+              {/* 关闭按钮 */}
+              <button
+                onClick={() => {
+                  setShowVideo(false);
+                  videoRef.current?.pause();
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '12px',
+                  right: '12px',
+                  zIndex: 10,
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'}
+              >
+                <X size={20} />
+              </button>
+              
+              <video
+                ref={videoRef}
+                src="/src/assets/introduce_video.mp4"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  display: 'block',
+                }}
+                controls
+                playsInline
+              />
+            </div>
+          </div>
         </div>
       </section>
 
@@ -137,14 +331,34 @@ export default function Home() {
 
         <div className="features-grid">
           {/* Profile */}
-          <div className="feature-card">
+          <div className="feature-card" onClick={handleGoToProfile} style={{ cursor: 'pointer', position: 'relative' }}>
+            {profileCompleted && (
+              <div style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 10px',
+                backgroundColor: '#dcfce7',
+                color: '#16a34a',
+                fontSize: '12px',
+                fontWeight: 600,
+                borderRadius: '20px',
+                border: '1px solid #86efac',
+              }}>
+                <CheckCircle size={12} />
+                已完成<br />下一步👉
+              </div>
+            )}
             <div className="feature-icon blue">
               <UserCog className="w-6 h-6" />
             </div>
             <h3 className="feature-title">资料完善</h3>
             <p className="feature-desc">上传简历，设置目标公司和岗位</p>
             <div className="feature-link blue">
-              <span>去完善</span>
+              <span>{profileCompleted ? '查看/修改' : '去完善'}</span>
               <ChevronRight className="w-4 h-4" />
             </div>
           </div>
@@ -353,7 +567,35 @@ export default function Home() {
           <h2 className="cta-title">准备好迎接您的下一场面试了吗？</h2>
           <p className="cta-subtitle">立即开始免费体验，让AI数字考官助您一臂之力</p>
           <div className="cta-buttons">
-            <button className="btn-primary">
+            <button 
+              className="btn-primary"
+              onClick={() => {
+                const target = document.getElementById('features');
+                if (target) {
+                  const targetY = target.offsetTop - 80;
+                  const startY = window.scrollY;
+                  const distance = targetY - startY;
+                  const duration = 1000; // 向上滚动稍慢一点更有质感
+                  const startTime = performance.now();
+                  
+                  const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+                  
+                  const scroll = (currentTime: number) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const eased = easeOutCubic(progress);
+                    
+                    window.scrollTo(0, startY + distance * eased);
+                    
+                    if (progress < 1) {
+                      requestAnimationFrame(scroll);
+                    }
+                  };
+                  
+                  requestAnimationFrame(scroll);
+                }
+              }}
+            >
               <span>免费开始模拟面试</span>
               <ArrowRight className="w-5 h-5" />
             </button>
@@ -421,6 +663,511 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* 资料完善页面 - 滑动进入 */}
+      <div 
+        className={`profile-page ${currentView === 'profile' ? 'profile-page-active' : ''}`}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: '#f8fafc',
+          zIndex: 100,
+          transform: currentView === 'profile' 
+            ? 'translateX(0)' 
+            : 'translateX(100%)',
+          transition: isAnimating 
+            ? 'transform 500ms cubic-bezier(0.33, 1, 0.68, 1)' 
+            : 'none',
+          overflowY: 'auto',
+        }}
+      >
+        {/* Header */}
+        <header style={{
+          backgroundColor: '#fff',
+          borderBottom: '1px solid #e2e8f0',
+          padding: '16px 24px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 10,
+        }}>
+          <div style={{
+            maxWidth: '800px',
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}>
+            <button 
+              onClick={() => handleBackToHome()}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '8px 16px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '8px',
+                backgroundColor: '#fff',
+                color: '#64748b',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f1f5f9';
+                e.currentTarget.style.color = '#334155';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.color = '#64748b';
+              }}
+            >
+              <ArrowLeft size={18} />
+              返回主页面
+            </button>
+            <h1 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: '#1e293b',
+            }}>完善个人资料</h1>
+            <div style={{ width: '100px' }} />
+          </div>
+        </header>
+
+        {/* Form Content */}
+        <main style={{
+          maxWidth: '800px',
+          margin: '0 auto',
+          padding: '32px 24px 80px',
+        }}>
+          {/* Resume Upload Section */}
+          <section style={{
+            backgroundColor: '#fff',
+            borderRadius: '16px',
+            padding: '24px',
+            marginBottom: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+          }}>
+            <h2 style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#1e293b',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+            }}>
+              <Upload size={18} style={{ color: '#3b82f6' }} />
+              简历上传
+            </h2>
+            
+            <div 
+              onClick={() => fileInputRef.current?.click()}
+              style={{
+                border: '2px dashed #cbd5e1',
+                borderRadius: '12px',
+                padding: '40px',
+                textAlign: 'center',
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                backgroundColor: uploadedFile ? '#eff6ff' : '#f8fafc',
+                borderColor: uploadedFile ? '#3b82f6' : '#cbd5e1',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#3b82f6';
+                e.currentTarget.style.backgroundColor = '#eff6ff';
+              }}
+              onMouseLeave={(e) => {
+                if (!uploadedFile) {
+                  e.currentTarget.style.borderColor = '#cbd5e1';
+                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                }
+              }}
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept=".pdf,.doc,.docx"
+                style={{ display: 'none' }}
+              />
+              <Upload size={32} style={{ 
+                color: uploadedFile ? '#3b82f6' : '#94a3b8',
+                marginBottom: '12px' 
+              }} />
+              {uploadedFile ? (
+                <div>
+                  <p style={{ color: '#3b82f6', fontWeight: 500 }}>{uploadedFile.name}</p>
+                  <p style={{ color: '#64748b', fontSize: '13px', marginTop: '4px' }}>
+                    点击重新上传
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <p style={{ color: '#334155', fontWeight: 500, marginBottom: '4px' }}>
+                    点击或拖拽上传简历
+                  </p>
+                  <p style={{ color: '#94a3b8', fontSize: '13px' }}>
+                    支持 PDF、Word 格式，大小不超过 10MB
+                  </p>
+                </>
+              )}
+            </div>
+          </section>
+
+          {/* Basic Info Section */}
+          <section style={{
+            backgroundColor: '#fff',
+            borderRadius: '16px',
+            padding: '24px',
+            marginBottom: '24px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+          }}>
+            <h2 style={{
+              fontSize: '16px',
+              fontWeight: 600,
+              color: '#1e293b',
+              marginBottom: '20px',
+            }}>基本信息</h2>
+
+            <div style={{ display: 'grid', gap: '20px' }}>
+              {/* Name */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  marginBottom: '6px',
+                }}>
+                  姓名 <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="请输入您的真实姓名"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    transition: 'all 0.2s',
+                    outline: 'none',
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                />
+              </div>
+
+              {/* Gender & Age */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: '#374151',
+                    marginBottom: '6px',
+                  }}>
+                    性别 <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    {[
+                      { value: 'male', label: '男' },
+                      { value: 'female', label: '女' },
+                    ].map((option) => (
+                      <label
+                        key={option.value}
+                        style={{
+                          flex: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '6px',
+                          padding: '12px',
+                          border: `1px solid ${formData.gender === option.value ? '#3b82f6' : '#e2e8f0'}`,
+                          borderRadius: '10px',
+                          cursor: 'pointer',
+                          backgroundColor: formData.gender === option.value ? '#eff6ff' : '#fff',
+                          color: formData.gender === option.value ? '#3b82f6' : '#64748b',
+                          fontSize: '14px',
+                          transition: 'all 0.2s',
+                        }}
+                      >
+                        <input
+                          type="radio"
+                          name="gender"
+                          value={option.value}
+                          checked={formData.gender === option.value}
+                          onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                          style={{ display: 'none' }}
+                        />
+                        {option.label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label style={{
+                    display: 'block',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    color: '#374151',
+                    marginBottom: '6px',
+                  }}>
+                    年龄 <span style={{ color: '#ef4444' }}>*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.age}
+                    onChange={(e) => setFormData({...formData, age: e.target.value})}
+                    placeholder="请输入年龄"
+                    min="18"
+                    max="60"
+                    style={{
+                      width: '100%',
+                      padding: '12px 16px',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '10px',
+                      fontSize: '14px',
+                      transition: 'all 0.2s',
+                      outline: 'none',
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                    onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                  />
+                </div>
+              </div>
+
+              {/* City */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  marginBottom: '6px',
+                }}>
+                  城市 <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <input
+                  type="text"
+                  value={formData.city}
+                  onChange={(e) => setFormData({...formData, city: e.target.value})}
+                  placeholder="例如：北京、上海、深圳"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    transition: 'all 0.2s',
+                    outline: 'none',
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                />
+              </div>
+
+              {/* Education */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#374151',
+                  marginBottom: '6px',
+                }}>
+                  学历 <span style={{ color: '#ef4444' }}>*</span>
+                </label>
+                <select
+                  value={formData.education}
+                  onChange={(e) => setFormData({...formData, education: e.target.value})}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '1px solid #e2e8f0',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    transition: 'all 0.2s',
+                    outline: 'none',
+                    backgroundColor: '#fff',
+                    cursor: 'pointer',
+                  }}
+                  onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+                  onBlur={(e) => e.target.style.borderColor = '#e2e8f0'}
+                >
+                  <option value="highschool">高中及以下</option>
+                  <option value="college">大专</option>
+                  <option value="bachelor">本科</option>
+                  <option value="master">硕士</option>
+                  <option value="phd">博士</option>
+                </select>
+              </div>
+            </div>
+          </section>
+
+          {/* Submit Buttons */}
+          <div style={{
+            display: 'flex',
+            gap: '12px',
+            position: 'sticky',
+            bottom: 20,
+            backgroundColor: '#f8fafc',
+            padding: '16px 0',
+          }}>
+            <button
+              onClick={() => handleBackToHome()}
+              style={{
+                flex: 1,
+                padding: '14px 24px',
+                border: '1px solid #e2e8f0',
+                borderRadius: '10px',
+                backgroundColor: '#fff',
+                color: '#64748b',
+                fontSize: '15px',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#f1f5f9';
+                e.currentTarget.style.color = '#334155';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#fff';
+                e.currentTarget.style.color = '#64748b';
+              }}
+            >
+              取消
+            </button>
+            <button
+              onClick={handleSubmit}
+              style={{
+                flex: 2,
+                padding: '14px 24px',
+                border: 'none',
+                borderRadius: '10px',
+                backgroundColor: '#3b82f6',
+                color: '#fff',
+                fontSize: '15px',
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.2s',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#2563eb';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#3b82f6';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}
+            >
+              确认提交
+            </button>
+          </div>
+        </main>
+
+        {/* 成功提交弹窗 */}
+        {showSuccessModal && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 200,
+            animation: 'fadeIn 0.3s ease-out',
+          }}>
+            <div style={{
+              backgroundColor: '#fff',
+              borderRadius: '20px',
+              padding: '40px 48px',
+              textAlign: 'center',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+              animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              maxWidth: '360px',
+              width: '90%',
+            }}>
+              <div style={{
+                width: '72px',
+                height: '72px',
+                borderRadius: '50%',
+                backgroundColor: '#dcfce7',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 20px',
+              }}>
+                <CheckCircle size={36} style={{ color: '#16a34a' }} />
+              </div>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: 600,
+                color: '#1e293b',
+                marginBottom: '8px',
+              }}>
+                提交成功！
+              </h3>
+              <p style={{
+                fontSize: '14px',
+                color: '#64748b',
+                marginBottom: '24px',
+              }}>
+                您的资料已成功保存
+              </p>
+              <div style={{
+                width: '100%',
+                height: '4px',
+                backgroundColor: '#e2e8f0',
+                borderRadius: '2px',
+                overflow: 'hidden',
+              }}>
+                <div style={{
+                  height: '100%',
+                  backgroundColor: '#3b82f6',
+                  borderRadius: '2px',
+                  animation: 'progress 1.5s ease-out forwards',
+                }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 弹窗动画样式 */}
+        <style>{`
+          @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+          }
+          @keyframes slideUp {
+            from { 
+              opacity: 0;
+              transform: translateY(30px) scale(0.95);
+            }
+            to { 
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          @keyframes progress {
+            from { width: 100%; }
+            to { width: 0%; }
+          }
+        `}</style>
+      </div>
     </div>
   );
 }
