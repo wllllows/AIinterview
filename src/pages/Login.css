@@ -1095,13 +1095,6 @@
     position: relative;
 }
 
-.login-footer-cta h2 {
-    font-family: var(--font-serif);
-    font-size: clamp(3rem, 10vw, 8rem);
-    color: var(--color-light-blue);
-    line-height: 0.8;
-    -webkit-text-stroke: 3px var(--color-black);
-}
 
 .login-container .login-cta-button {
     display: inline-flex;

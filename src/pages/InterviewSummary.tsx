@@ -18,7 +18,7 @@ export default function InterviewSummary() {
         <div className="summary-page">
 
             <header className="summary-header">
-                <button className="back-home-btn" onClick={() => navigate('/')}>
+                <button className="back-home-btn" onClick={() => navigate('/app')}>
                     <ChevronLeft size={18} />
                     <span>返回首页</span>
                 </button>

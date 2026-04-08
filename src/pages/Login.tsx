@@ -455,11 +455,6 @@ export default function Login() {
                         </div>
                     </div>
                     
-                    <div className="login-footer-cta">
-                        <h2>立即体验</h2>
-                        <a href="#" onClick={handleFooterCtaClick} className="login-cta-button">免费开始模拟面试 ↗</a>
-                    </div>
-                    
                     <div className="login-footer-bottom">
                         <span>© 智面AI 2024 保留所有权利</span>
                         <a href="#">用户协议</a>
