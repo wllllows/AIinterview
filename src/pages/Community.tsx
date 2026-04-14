@@ -43,7 +43,7 @@ export default function Community() {
     const [visibleCount, setVisibleCount] = useState(8);
     const [loading, setLoading] = useState(false);
     const loaderRef = useRef<HTMLDivElement>(null);
-    const natigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         setDisplayPosts(allFakePosts.slice(0, visibleCount));
@@ -106,7 +106,7 @@ export default function Community() {
 
                     <div className="post-list">
                         {displayPosts.map((post) => (
-                            <article key={post.id} className="post-item" onClick={()=>natigate('/post/${post.id}')}>
+                            <article key={post.id} className="post-item" onClick={()=>navigate('/app/post/${post.id}')}>
                                 <h3 className="post-title">{post.title}</h3>
                                 <p className="post-desc">{post.desc}</p>
                                 <div className="post-footer">

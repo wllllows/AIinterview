@@ -1,6 +1,8 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 import MainLayout from '../layout/MainLayout'
-import Login from '../pages/Login'
+
+// 🌟 1. 引入我们即将创建的过渡包裹页面，不需要直接引入 Login 了（它会在过渡页内部被引入）
+import LandingTransition from '../pages/LandingTransition'
 
 import Home from '../pages/Home'
 import Mistakesbook from '../pages/Mistakesbook'
@@ -18,7 +20,8 @@ const router = createBrowserRouter([
     },
     {
         path: '/login',
-        element: <Login />, 
+        // 🌟 2. 将原本的 <Login /> 替换为 <LandingTransition />
+        element: <LandingTransition />, 
     },
     {
         path: '/app',
@@ -50,7 +53,6 @@ const router = createBrowserRouter([
             }
         ],
     },
-
     {
         path: '/interview/start',
         element: <Interview />, 
