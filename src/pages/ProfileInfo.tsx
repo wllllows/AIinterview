@@ -1,248 +1,182 @@
-import React from 'react';
-import { Plus, Trash2, Link as LinkIcon } from 'lucide-react';
+import React, { useState } from 'react';
+import { BookOpen, FileText, Clock, ChevronRight, Target, Zap, PlayCircle, BarChart2 } from 'lucide-react';
+import ResumeForm from './ResumeForm';
 import './ProfileInfo.css';
 
-// 通用的区块组件：处理左侧大标题和右侧内容布局
-const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (
-    <div className="resume-section">
-        <div className="section-title">{title}</div>
-        <div className="section-content">{children}</div>
-    </div>
-);
+export default function ProfileCenter() {
+    const [activeTab, setActiveTab] = useState<'growth' | 'learning' | 'resume'>('growth');
 
-// 通用的输入框组件：包含标签、必填标识和补充说明
-const Field = ({ label, placeholder, type = "text", required = true, tip = "" }: any) => (
-    <div className="field-group">
-        <label className="field-label">
-            {label}{required && <span className="required">*</span>}
-        </label>
-        {type === "select" ? (
-            <select className="field-input display-only">
-                <option value="">{placeholder}</option>
-            </select>
-        ) : (
-            <input type="text" className="field-input display-only" placeholder={placeholder} readOnly />
-        )}
-        {tip && <p className="field-tip">{tip}</p>}
-    </div>
-);
+    const historyRecords = [
+        { id: 1, date: '2026-04-12', company: '字节跳动', position: '前端开发', score: 95, tags: ['表现优异', '技术扎实'] },
+        { id: 2, date: '2026-04-05', company: '美团', position: '大前端', score: 78, tags: ['算法薄弱', '语速偏快'] },
+        { id: 3, date: '2026-03-28', company: '腾讯', position: 'Web前端', score: 82, tags: ['项目深度不足'] },
+    ];
 
-export default function ResumeDisplay() {
-    return (
-        <div className="resume-display-container">
+    const learningResources = [
+        { id: 1, type: 'article', title: 'React Fiber 架构深度解析与面试防坑', reason: '针对历次面试中“底层原理”得分较低推荐', duration: '15 mins', icon: <FileText size={16} /> },
+        { id: 2, type: 'video', title: '面试突击：如何用 STAR 原则包装你的普通项目？', reason: '针对上周面试“项目经验”挖掘不足推荐', duration: '8 mins', icon: <PlayCircle size={16} /> },
+        { id: 3, type: 'practice', title: '高频手写题专项训练：防抖、节流与深拷贝', reason: '算法与手撕代码模块需巩固', duration: '3 题', icon: <Target size={16} /> },
+    ];
 
-            {/* 1. 简历上传 */}
-            <Section title="简历上传">
-                <div className="upload-box">
-                    <h3>简历文档上传</h3>
-                    <button className="btn-upload-square">
-                        <Plus size={24} />
-                    </button>
-                    <p className="field-tip" style={{ justifyContent: 'center', marginTop: '12px' }}>
-                        支持 PDF、Word、JPG 格式，大小不超过 10MB
-                    </p>
-                </div>
-            </Section>
+    const renderGrowthTab = () => (
+        <div className="tab-pane fade-in-up">
+            {/* 🌟 核心升级：Bento Box (2:1 黄金网格) */}
+            <div className="bento-grid-top">
 
-            {/* 2. 个人信息 */}
-            <Section title="个人信息">
-                <div className="field-group">
-                    <label className="field-label">照片</label>
-                    <button className="btn-upload-square small">
-                        <Plus size={20} />
-                    </button>
-                    <p className="field-tip">建议使用蓝底或白底证件照，展现专业形象</p>
-                </div>
-
-                <Field label="姓名" placeholder="请输入姓名" tip="请与身份证件上的姓名保持一致" />
-
-                <div className="field-group">
-                    <label className="field-label">性别<span className="required">*</span></label>
-                    <div className="radio-group">
-                        <label className="radio-label">
-                            <input type="radio" name="gender" defaultChecked /> 男
-                        </label>
-                        <label className="radio-label">
-                            <input type="radio" name="gender" /> 女
-                        </label>
+                {/* 左宽 (65%)：成长曲线图表 */}
+                <div className="saas-card chart-card">
+                    <div className="card-header">
+                        <div className="header-left">
+                            <BarChart2 size={16} className="text-gray-500" />
+                            <h3 className="card-title">综合能力趋势</h3>
+                        </div>
+                        <span className="card-subtitle">近 6 次面试</span>
+                    </div>
+                    <div className="chart-container">
+                        {/* 🌟 纯手工绘制的高级 SVG 折线图 (替代占位符) */}
+                        <svg viewBox="0 0 600 200" className="svg-chart" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stopColor="rgba(59, 130, 246, 0.2)" />
+                                    <stop offset="100%" stopColor="rgba(59, 130, 246, 0)" />
+                                </linearGradient>
+                            </defs>
+                            {/* 背景网格线 */}
+                            <path d="M0 40 L600 40 M0 100 L600 100 M0 160 L600 160" stroke="#f1f5f9" strokeWidth="1" strokeDasharray="4 4" fill="none" />
+                            {/* 渐变填充区域 */}
+                            <path d="M 0 150 C 100 150, 150 120, 250 130 C 350 140, 450 60, 600 40 L 600 200 L 0 200 Z" fill="url(#chart-gradient)" />
+                            {/* 核心折线 */}
+                            <path d="M 0 150 C 100 150, 150 120, 250 130 C 350 140, 450 60, 600 40" fill="none" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+                            {/* 数据点 */}
+                            <circle cx="250" cy="130" r="4" fill="#ffffff" stroke="#3b82f6" strokeWidth="2" />
+                            <circle cx="450" cy="85" r="4" fill="#ffffff" stroke="#3b82f6" strokeWidth="2" />
+                            <circle cx="600" cy="40" r="5" fill="#3b82f6" stroke="#ffffff" strokeWidth="2" />
+                        </svg>
                     </div>
                 </div>
 
-                <div className="field-group">
-                    <label className="field-label" style={{ fontWeight: 600, marginBottom: '12px', marginTop: '8px' }}>证件信息</label>
-                </div>
-
-                <Field label="国家/地区" placeholder="中国大陆" type="select" />
-
-                <div className="field-group">
-                    <label className="field-label">个人证件<span className="required">*</span></label>
-                    <div className="flex-row">
-                        <select className="field-input display-only" style={{ width: '140px' }}>
-                            <option>身份证</option>
-                            <option>护照</option>
-                        </select>
-                        <input type="text" className="field-input display-only flex-1" placeholder="请填写您的证件号码" readOnly />
-                    </div>
-                </div>
-
-                <Field label="手机号码" placeholder="请填写您的手机号码" />
-                <Field label="邮箱" placeholder="请填写您的邮箱地址" tip="面试通知将通过邮件发送，请确保填写准确" />
-            </Section>
-
-            {/* 3. 教育经历 */}
-            <Section title="教育经历">
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>当前教育经历</span>
-                    </div>
-                    <Field label="学历" placeholder="请选择学历" type="select" />
-                    <Field label="学校名称" placeholder="请输入学校名称" />
-                    <Field label="目前就读地" placeholder="请选择目前就读地" type="select" />
-
-                    <div className="field-group">
-                        <label className="field-label">起止时间<span className="required">*</span></label>
-                        <div className="flex-row align-center gap-2">
-                            <input type="text" className="field-input display-only" placeholder="开始日期" readOnly />
-                            <span>-</span>
-                            <input type="text" className="field-input display-only" placeholder="结束日期" readOnly />
+                {/* 右窄 (35%)：AI 弱项诊断 */}
+                <div className="saas-card diagnosis-card">
+                    <div className="card-header border-bottom-light">
+                        <div className="header-left">
+                            <Zap size={16} className="text-orange-500" />
+                            <h3 className="card-title">AI 短板诊断</h3>
                         </div>
                     </div>
-                    <Field label="院系" placeholder="请输入院系" />
-                    <Field label="专业" placeholder="请输入专业" />
-                </div>
-                <div className="action-link">
-                    <Plus size={16} /> 添加教育经历
-                </div>
-            </Section>
-
-            {/* 4. 实习经历 */}
-            <Section title="实习经历">
-                <div className="field-group" style={{ marginBottom: '24px' }}>
-                    <label className="checkbox-label">
-                        <input type="checkbox" name="no-internship" /> 无实习经历
-                    </label>
-                </div>
-
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>实习经历-1</span>
-                        <span className="action-link delete">
-                            <Trash2 size={15} style={{ marginRight: '4px' }} /> 删除经历
-                        </span>
+                    <div className="metrics-list">
+                        <div className="metric-item">
+                            <div className="metric-label">
+                                <span>算法与复杂度评估</span>
+                                <span className="metric-value text-red">待提升</span>
+                            </div>
+                            <div className="progress-thin"><div className="progress-bar bg-red" style={{ width: '45%' }}></div></div>
+                        </div>
+                        <div className="metric-item">
+                            <div className="metric-label">
+                                <span>项目难点挖掘</span>
+                                <span className="metric-value text-orange">一般</span>
+                            </div>
+                            <div className="progress-thin"><div className="progress-bar bg-orange" style={{ width: '60%' }}></div></div>
+                        </div>
+                        <div className="metric-item">
+                            <div className="metric-label">
+                                <span>抗压与情绪管理</span>
+                                <span className="metric-value text-green">良好</span>
+                            </div>
+                            <div className="progress-thin"><div className="progress-bar bg-green" style={{ width: '85%' }}></div></div>
+                        </div>
                     </div>
-                    <Field label="公司" placeholder="请输入实习公司" />
-                    <Field label="职位" placeholder="请输入职位" />
-                    <div className="field-group">
-                        <label className="field-label">描述</label>
-                        <textarea className="field-input display-only" rows={3} placeholder="请描述你的实习职责和主要成就" readOnly></textarea>
-                        <p className="field-tip">建议使用：动词 + 项目 + 结果 的方式描述</p>
+                    <div className="diagnosis-footer">
+                        💡 <strong>洞察：</strong>基础扎实，但系统设计易紧张，建议增加压测模拟。
                     </div>
                 </div>
-                <div className="action-link">
-                    <Plus size={16} /> 添加实习经历
-                </div>
-            </Section>
-
-            {/* 5. 项目经历 */}
-            <Section title="项目经历">
-                <div className="field-group">
-                    <label className="checkbox-label">
-                        <input type="checkbox" /> 无项目经历
-                    </label>
-                </div>
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>项目经历-1</span>
-                        <span className="action-link delete"><Trash2 size={15} /> 删除项目</span>
-                    </div>
-                    <Field label="项目名称" placeholder="请输入项目名称" />
-                    <Field label="担任角色" placeholder="例如：前端负责人、算法实习生" />
-                    <div className="field-group">
-                        <label className="field-label">项目描述</label>
-                        <textarea className="field-input display-only" rows={3} placeholder="请输入项目背景及你的贡献" readOnly></textarea>
-                    </div>
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加项目经历</div>
-            </Section>
-
-            {/* 6. 获奖信息 */}
-            <Section title="获奖信息">
-                <div className="field-group">
-                    <label className="checkbox-label"><input type="checkbox" /> 无获奖信息</label>
-                </div>
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>获奖信息-1</span>
-                        <span className="action-link delete"><Trash2 size={15} /> 删除</span>
-                    </div>
-                    <Field label="获奖类型" placeholder="请选择" type="select" />
-                    <Field label="奖项名称" placeholder="请输入完整奖项名称" />
-                    <Field label="获奖时间" placeholder="选择日期" />
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加获奖信息</div>
-            </Section>
-
-            {/* 7. 技能信息 */}
-            <Section title="技能信息">
-                <div className="field-group">
-                    <label className="field-label">外语考试/等级</label>
-                    <div className="flex-row">
-                        <select className="field-input display-only" style={{ width: '180px' }}>
-                            <option>请选择考试类型</option>
-                            <option>CET-4</option>
-                            <option>CET-6</option>
-                            <option>IELTS</option>
-                        </select>
-                        <input type="text" className="field-input display-only flex-1" placeholder="请填写分数/等级" readOnly />
-                    </div>
-                </div>
-                <Field label="掌握语言" placeholder="例如：Java, Python, JavaScript" tip="多个语言请用逗号分隔" />
-                <div className="field-group">
-                    <label className="field-label">AI应用技能</label>
-                    <textarea className="field-input display-only" rows={2} placeholder="描述你熟悉的AI工具（如 ChatGPT, Midjourney, Copilot）及应用场景" readOnly></textarea>
-                </div>
-            </Section>
-
-            {/* 8. 作品或个人主页 */}
-            <Section title="作品或个人主页">
-                <div className="upload-box" style={{ padding: '30px 0', marginBottom: '20px' }}>
-                    <p style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>上传您的作品集或其他证明附件</p>
-                    <button className="btn-upload-square">
-                        <Plus size={24} />
-                    </button>
-                </div>
-                <div className="field-group">
-                    <label className="field-label">个人主页/作品链接</label>
-                    <div className="flex-row align-center">
-                        <LinkIcon size={18} color="#3b82f6" />
-                        <input type="text" className="field-input display-only flex-1" placeholder="GitHub, 个人博客或作品在线预览链接" readOnly />
-                    </div>
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加链接</div>
-            </Section>
-
-            {/* 9. 资料证明人 */}
-            <Section title="资料证明人">
-                <p className="field-tip" style={{ marginBottom: '20px' }}>请提供 1-2 位可以核实您背景信息的推荐人</p>
-                <Field label="证明人姓名" placeholder="姓名" />
-                <Field label="证明人身份" placeholder="例如：导师、直属主管" />
-                <Field label="联系电话" placeholder="联系电话" />
-            </Section>
-
-            {/* 10. 其他关键信息 */}
-            <Section title="其他关键信息">
-                <div className="field-group">
-                    <label className="field-label">补充信息</label>
-                    <textarea className="field-input display-only" rows={4} placeholder="你可以补充任何你想让面试官了解的信息，如：特殊的兴趣爱好、性格优势等" readOnly></textarea>
-                </div>
-            </Section>
-
-            {/* 底部按钮区 */}
-            <div className="form-actions" style={{ borderTop: '1px solid #f1f5f9', marginTop: '40px' }}>
-                <button className="btn-primary">提交并预览</button>
-                <button className="btn-default">保存草稿</button>
             </div>
 
+            {/* 底部全宽 (100%)：历史记录 */}
+            <div className="saas-card mt-6">
+                <div className="card-header border-bottom">
+                    <div className="header-left">
+                        <Clock size={16} className="text-gray-500" />
+                        <h3 className="card-title">历史面试记录</h3>
+                    </div>
+                </div>
+                <div className="data-list">
+                    {historyRecords.map(record => (
+                        <div className="data-row" key={record.id}>
+                            <div className="row-left">
+                                <div className={`score-badge ${record.score >= 90 ? 'score-high' : record.score >= 80 ? 'score-mid' : 'score-low'}`}>
+                                    {record.score}
+                                </div>
+                                <div className="row-info">
+                                    <h4>{record.company} <span className="divider">/</span> <span className="font-normal">{record.position}</span></h4>
+                                    <span className="row-date">{record.date}</span>
+                                </div>
+                            </div>
+                            <div className="row-right">
+                                <div className="tag-group">
+                                    {record.tags.map(tag => <span key={tag} className="data-tag">{tag}</span>)}
+                                </div>
+                                <button className="btn-icon-link">查看报告 <ChevronRight size={14} /></button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderLearningTab = () => (
+        <div className="tab-pane fade-in-up">
+            <div className="banner-sleek">
+                <div className="banner-content">
+                    <h2>为您定制的提升计划</h2>
+                    <p>基于最近 3 次面试表现生成的精准突破路径</p>
+                </div>
+            </div>
+            <div className="resource-grid">
+                {learningResources.map(res => (
+                    <div className="resource-card" key={res.id}>
+                        <div className="res-header">
+                            <div className={`res-icon-box ${res.type}`}>{res.icon}</div>
+                            <span className="res-meta">{res.duration}</span>
+                        </div>
+                        <h4 className="res-title">{res.title}</h4>
+                        <div className="res-footer">
+                            <Target size={12} className="text-gray-400" />
+                            <span className="res-reason">{res.reason}</span>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+
+    return (
+        <div className="profile-center-container">
+            {/* 🌟 核心升级：对齐切割式头部 */}
+            <div className="profile-header-aligned">
+                <div className="header-titles">
+                    <h1 className="page-title">成长看板</h1>
+                </div>
+
+                <div className="segmented-control">
+                    <button className={`segment-btn ${activeTab === 'growth' ? 'active' : ''}`} onClick={() => setActiveTab('growth')}>
+                        <BarChart2 size={14} style={{ marginRight: '4px' }} /> 能力洞察
+                    </button>
+                    <button className={`segment-btn ${activeTab === 'learning' ? 'active' : ''}`} onClick={() => setActiveTab('learning')}>
+                        <Zap size={14} style={{ marginRight: '4px' }} /> 突破路径
+                    </button>
+                    <button className={`segment-btn ${activeTab === 'resume' ? 'active' : ''}`} onClick={() => setActiveTab('resume')}>
+                        <FileText size={14} style={{ marginRight: '4px' }} /> 个人档案
+                    </button>
+                </div>
+            </div>
+
+            <div className="profile-content">
+                {activeTab === 'growth' && renderGrowthTab()}
+                {activeTab === 'learning' && renderLearningTab()}
+                {activeTab === 'resume' && <ResumeForm />}
+            </div>
         </div>
     );
 }

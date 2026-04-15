@@ -26,12 +26,16 @@
 }
 
 .modal {
-    width: 480px;
+    width: 560px;
+    /* 🌟 加宽以容纳更专业的表单 */
+    max-height: 90vh;
+    /* 防止屏幕过小 */
+    display: flex;
+    flex-direction: column;
     background: var(--bg-modal);
     border-radius: 24px;
     border: 1px solid white;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    overflow: hidden;
     animation: modalScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -49,11 +53,12 @@
 
 /* --- 头部 --- */
 .modal-header {
-    padding: 24px 28px;
+    padding: 24px 32px;
     border-bottom: 1px solid var(--border-light);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;
 }
 
 .header-title {
@@ -74,12 +79,23 @@
     display: flex;
 }
 
-/* --- 主体布局 --- */
+/* --- 主体布局 (增加滚动支持) --- */
 .modal-body {
-    padding: 28px;
+    padding: 24px 32px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
+    overflow-y: auto;
+    /* 内容过多时可滚动 */
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
 }
 
 .form-section.full-width {
@@ -98,18 +114,49 @@
     gap: 8px;
 }
 
-/* --- 岗位选择卡片 --- */
+/* --- 目标定位区域 --- */
 .position-grid {
     display: flex;
     gap: 12px;
 }
 
-.company-input {
-    flex: 1.2;
+.company-select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
 }
 
-.position-selectors {
-    flex: 2;
+.company-select,
+.position-input {
+    width: 100%;
+    height: 42px;
+    padding: 0 16px;
+    background: var(--bg-input);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.company-select {
+    padding-right: 32px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.company-select:focus,
+.position-input:focus {
+    background: white;
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* --- 面试维度胶囊 --- */
+.radio-pill-group {
     display: flex;
     background: var(--bg-input);
     padding: 4px;
@@ -117,27 +164,59 @@
     gap: 4px;
 }
 
-.pos-card {
+.radio-pill-group.vertical {
+    flex-direction: column;
+    background: transparent;
+    padding: 0;
+    gap: 8px;
+}
+
+.radio-pill-item {
     flex: 1;
+    cursor: pointer;
+}
+
+.radio-pill-item input {
+    display: none;
+}
+
+.radio-pill-group.vertical .radio-pill-item span {
+    background: var(--bg-input);
+    justify-content: flex-start;
+    padding-left: 16px;
+}
+
+.radio-pill-item span {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    height: 38px;
+    border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
     color: var(--text-muted);
-    cursor: pointer;
-    border-radius: 8px;
     transition: var(--transition);
 }
 
-.pos-card.active {
+.radio-pill-item.active span {
     background: white;
     color: var(--primary);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-light);
 }
 
-/* --- 随机性格展示区 --- */
+/* --- 背景材料专区 (JD 输入与 Switch) --- */
+.bg-material-box {
+    background: #f8fafc;
+    border: 1px solid var(--border-light);
+    padding: 16px;
+    border-radius: 16px;
+}
+
+.bg-material-box .section-title {
+    margin-bottom: 0;
+}
+
 .section-header-flex {
     display: flex;
     justify-content: space-between;
@@ -145,6 +224,70 @@
     margin-bottom: 12px;
 }
 
+.switch-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.switch-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.switch {
+    width: 36px;
+    height: 20px;
+    background: #cbd5e1;
+    border-radius: 20px;
+    position: relative;
+    transition: var(--transition);
+}
+
+.switch.active {
+    background: var(--primary);
+}
+
+.switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.switch.active::after {
+    transform: translateX(16px);
+}
+
+.jd-textarea {
+    width: 100%;
+    height: 80px;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: white;
+    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    font-size: 13px;
+    color: var(--text-main);
+    font-family: inherit;
+    resize: none;
+    transition: var(--transition);
+}
+
+.jd-textarea:focus {
+    border-color: var(--primary);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+/* --- 性格特质池 --- */
 .random-refresh-btn {
     background: transparent;
     border: none;
@@ -165,164 +308,55 @@
     transform: rotate(15deg);
 }
 
-.random-personality-display {
-    background: #f8fafc;
-    border: 2px dashed var(--border-light);
-    border-radius: 16px;
-    padding: 20px;
+.personality-pool-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    min-height: 50px;
+    gap: 10px;
+    margin-top: 4px;
 }
 
-.personality-bubble {
-    padding: 8px 16px;
-    background: white;
+.pool-badge {
+    padding: 6px 14px;
+    background: var(--bg-input);
+    border: 1px solid transparent;
     border-radius: 100px;
     font-size: 13px;
-    font-weight: 700;
-    color: var(--theme);
-    border: 1px solid var(--theme);
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.05);
-    animation: bubblePop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+    gap: 6px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
 }
 
-@keyframes bubblePop {
-    from {
-        opacity: 0;
-        transform: scale(0.5);
-    }
-
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+.pool-badge:hover {
+    background: white;
+    border-color: var(--theme);
+    color: var(--theme);
 }
 
-.personality-bubble .dot {
+.pool-badge.selected {
+    background: white;
+    border-color: var(--theme);
+    color: var(--theme);
+    font-weight: 700;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+}
+
+.pool-badge.selected .dot {
     width: 6px;
     height: 6px;
     border-radius: 50%;
     background: var(--theme);
 }
 
-.personality-hint {
-    width: 100%;
-    margin-top: 10px;
-    font-size: 11px;
-    color: var(--text-muted);
-    opacity: 0.7;
-}
-
-/* --- 输入组件 (通用) --- */
-input {
-    width: 100%;
-    height: 42px;
-    padding: 0 16px;
-    background: var(--bg-input);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: var(--transition);
-}
-
-input:focus {
-    background: white;
-    border-color: var(--primary);
-    outline: none;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-/* 计数器与单位 */
-.counter-input,
-.unit-input {
-    display: flex;
-    align-items: center;
-    background: var(--bg-input);
-    border-radius: 12px;
-    height: 42px;
-    overflow: hidden;
-}
-
-.counter-input button {
-    width: 42px;
-    height: 100%;
-    border: none;
-    background: #e2e8f0;
-    color: var(--text-main);
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.counter-input button:hover {
-    background: #cbd5e1;
-}
-
-.counter-input span {
-    flex: 1;
-    text-align: center;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.unit-input input {
-    background: transparent;
-    border: none;
-    text-align: right;
-    padding-right: 8px;
-}
-
-.unit-input .unit {
-    padding-right: 16px;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--text-muted);
-}
-
-/* 难度胶囊 */
-.radio-pill-group {
-    display: flex;
-    background: var(--bg-input);
-    padding: 4px;
-    border-radius: 12px;
-}
-
-.radio-pill-item {
-    flex: 1;
-    cursor: pointer;
-}
-
-.radio-pill-item input {
-    display: none;
-}
-
-.radio-pill-item span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 34px;
-    border-radius: 9px;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-muted);
-    transition: var(--transition);
-}
-
-.radio-pill-item.active span {
-    background: white;
-    color: var(--primary);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-}
-
-/* --- 底部 --- */
+/* --- 底部操作区 --- */
 .modal-footer {
-    padding: 0 28px 28px;
+    padding: 24px 32px;
+    border-top: 1px solid var(--border-light);
+    flex-shrink: 0;
 }
 
 .btn-primary-shine {
@@ -340,8 +374,6 @@ input:focus {
     gap: 10px;
     cursor: pointer;
     transition: var(--transition);
-    position: relative;
-    overflow: hidden;
 }
 
 .btn-primary-shine:hover {
@@ -349,11 +381,6 @@ input:focus {
     box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.5);
 }
 
-.btn-primary-shine:active {
-    transform: translateY(0);
-}
-
-/* 关闭按钮 */
 .close-btn {
     background: var(--bg-input);
     border: none;

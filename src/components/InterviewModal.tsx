@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Sparkles, Building, BarChart3, Users, ChevronRight, RefreshCw, Monitor, Server } from 'lucide-react'
+import { X, Sparkles, Building, BarChart3, Users, ChevronRight, RefreshCw, Briefcase, FileText, Clock, Target } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import './InterviewModal.css'
 
@@ -11,7 +11,10 @@ type Props = {
 export default function InterviewModal({ open, onClose }: Props) {
     const navigate = useNavigate()
 
-    // 丰富的性格库
+    const companyList = [
+        '通用科技公司', '字节跳动', '腾讯', '阿里巴巴', '美团',
+    ];
+
     const personalityPool = [
         { label: '专业严谨', color: '#3b82f6' }, { label: '亲和友善', color: '#10b981' },
         { label: '高压追问', color: '#ef4444' }, { label: '技术深挖', color: '#8b5cf6' },
@@ -21,24 +24,39 @@ export default function InterviewModal({ open, onClose }: Props) {
         { label: '注重实践', color: '#f97316' }, { label: '学术派', color: '#6366f1' },
     ];
 
+    // 🌟 核心升级：数据结构完全贴合真实的面试业务流
     const [form, setForm] = useState({
-        company: '',
-        position: '前端开发',
-        level: '中等',
-        count: 1,
-        personalities: [] as typeof personalityPool, // 存储选中的性格对象
-        duration: '30',
+        company: companyList[0],
+        position: '前端开发工程师', // 改为自由输入，支持更细分的岗位
+        level: '初中级 (1-3年)',   // 目标职级
+        round: '专业技术面',       // 面试轮次
+        useSystemResume: true,    // 是否关联系统简历
+        jdText: '',               // 目标岗位的 JD
+        personalities: [] as typeof personalityPool,
+        duration: '30',           // 15, 30, 45 分钟
     })
 
-    // 纯随机抽取 1-3 个性格的函数
+    // 选中特质 (限制最多选 2 个，保证 AI 人设不精神分裂)
+    const togglePersonality = (p: typeof personalityPool[0]) => {
+        setForm(prev => {
+            const isSelected = prev.personalities.some(item => item.label === p.label);
+            if (isSelected) {
+                return { ...prev, personalities: prev.personalities.filter(item => item.label !== p.label) };
+            } else {
+                if (prev.personalities.length >= 2) return prev;
+                return { ...prev, personalities: [...prev.personalities, p] };
+            }
+        });
+    }
+
+    // 随机抽取 1-2 个特质
     const generateRandomPersonalities = () => {
-        const count = Math.floor(Math.random() * 3) + 1; // 随机 1-3
+        const count = Math.floor(Math.random() * 2) + 1;
         const shuffled = [...personalityPool].sort(() => 0.5 - Math.random());
         const selected = shuffled.slice(0, count);
         setForm(prev => ({ ...prev, personalities: selected }));
     }
 
-    // 初始打开时随机生成一次
     useEffect(() => {
         if (open) generateRandomPersonalities();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -47,62 +65,58 @@ export default function InterviewModal({ open, onClose }: Props) {
     if (!open) return null
 
     const startInterview = () => {
-        onClose()
-        // 传递性格标签数组
-        const personalityLabels = form.personalities.map(p => p.label);
+        if (form.personalities.length === 0) generateRandomPersonalities();
 
+        onClose()
+        const personalityLabels = form.personalities.map(p => p.label);
         navigate('/interview/start', {
-            state: {
-                config: { ...form, personalities: personalityLabels }
-            }
+            state: { config: { ...form, personalities: personalityLabels } }
         })
     }
 
     return (
         <div className="modal-overlay" onClick={onClose}>
             <div className="modal" onClick={(e) => e.stopPropagation()}>
-                {/* Header */}
                 <div className="modal-header">
                     <div className="header-title">
                         <div className="title-icon"><Sparkles size={16} /></div>
-                        <span>AI 面试实验室</span>
+                        <span>AI 模拟面试</span>
                     </div>
                     <button className="close-btn" onClick={onClose}><X size={20} /></button>
                 </div>
 
                 <div className="modal-body">
-                    {/* 岗位选择 */}
+
+                    {/* === 1. 目标定位 (公司 + 细分岗位) === */}
                     <div className="form-section full-width">
-                        <h4 className="section-title"><Building size={13} /> 目标岗位</h4>
+                        <h4 className="section-title"><Building size={13} /> 目标定位</h4>
                         <div className="position-grid">
-                            <input
-                                className="company-input"
-                                placeholder="拟申请公司"
-                                value={form.company}
-                                onChange={e => setForm({ ...form, company: e.target.value })}
-                            />
-                            <div className="position-selectors">
-                                <div
-                                    className={`pos-card ${form.position === '前端开发' ? 'active' : ''}`}
-                                    onClick={() => setForm({ ...form, position: '前端开发' })}
+                            <div className="company-select-wrapper" style={{ flex: 1 }}>
+                                <select
+                                    className="company-select"
+                                    value={form.company}
+                                    onChange={(e) => setForm({ ...form, company: e.target.value })}
                                 >
-                                    <Monitor size={14} /> 前端
-                                </div>
-                                <div
-                                    className={`pos-card ${form.position === '后端开发' ? 'active' : ''}`}
-                                    onClick={() => setForm({ ...form, position: '后端开发' })}
-                                >
-                                    <Server size={14} /> 后端
-                                </div>
+                                    {companyList.map(c => <option key={c} value={c}>{c}</option>)}
+                                </select>
+                            </div>
+                            <div style={{ flex: 1.5 }}>
+                                <input
+                                    type="text"
+                                    className="position-input"
+                                    value={form.position}
+                                    onChange={(e) => setForm({ ...form, position: e.target.value })}
+                                    placeholder="输入具体岗位 (如: React资深开发)"
+                                />
                             </div>
                         </div>
                     </div>
 
-                    {/* 难度 */}
-                    <div className="form-section full-width">
-                        <h4 className="section-title"><BarChart3 size={13} /> 面试难度</h4>
-                        <div className="radio-pill-group">
-                            {['简单', '中等', '困难'].map(item => (
+                    {/* === 2. 面试维度 (职级 + 轮次) === */}
+                    <div className="form-section">
+                        <h4 className="section-title"><BarChart3 size={13} /> 目标职级</h4>
+                        <div className="radio-pill-group vertical">
+                            {['实习/校招', '初中级 (1-3年)', '资深/专家'].map(item => (
                                 <label key={item} className={`radio-pill-item ${form.level === item ? 'active' : ''}`}>
                                     <input type="radio" checked={form.level === item} onChange={() => setForm({ ...form, level: item })} />
                                     <span>{item}</span>
@@ -111,51 +125,87 @@ export default function InterviewModal({ open, onClose }: Props) {
                         </div>
                     </div>
 
-                    {/* 纯随机性格展示区 */}
+                    <div className="form-section">
+                        <h4 className="section-title"><Target size={13} /> 面试轮次</h4>
+                        <div className="radio-pill-group vertical">
+                            {['专业技术面', '项目/架构面', '综合/HR面'].map(item => (
+                                <label key={item} className={`radio-pill-item ${form.round === item ? 'active' : ''}`}>
+                                    <input type="radio" checked={form.round === item} onChange={() => setForm({ ...form, round: item })} />
+                                    <span>{item}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* === 3. 背景材料 (AI 提问的灵魂) === */}
+                    <div className="form-section full-width bg-material-box">
+                        <div className="section-header-flex">
+                            <h4 className="section-title"><FileText size={13} /> 面试背景材料</h4>
+                            <label className="switch-wrapper">
+                                <span className="switch-label">关联系统个人档案</span>
+                                <div className={`switch ${form.useSystemResume ? 'active' : ''}`}>
+                                    <input type="checkbox" checked={form.useSystemResume} onChange={(e) => setForm({ ...form, useSystemResume: e.target.checked })} hidden />
+                                </div>
+                            </label>
+                        </div>
+                        <textarea
+                            className="jd-textarea"
+                            placeholder="选填：粘贴目标岗位的 JD (职位描述)，AI 将基于此进行定向提问，极大提升模拟真实度..."
+                            value={form.jdText}
+                            onChange={e => setForm({ ...form, jdText: e.target.value })}
+                        />
+                    </div>
+
+                    {/* === 4. 面试官设定 === */}
                     <div className="form-section full-width">
                         <div className="section-header-flex">
-                            <h4 className="section-title"><Users size={13} /> 面试官特质</h4>
+                            <h4 className="section-title">
+                                <Users size={13} /> 考官特质 <span style={{ fontSize: '11px', fontWeight: 'normal', opacity: 0.6 }}>(最多2项)</span>
+                            </h4>
                             <button className="random-refresh-btn" onClick={generateRandomPersonalities}>
                                 <RefreshCw size={12} /> 随机抽取
                             </button>
                         </div>
 
-                        <div className="random-personality-display">
-                            {form.personalities.map((p, index) => (
-                                <div
-                                    key={index}
-                                    className="personality-bubble"
-                                    style={{ '--theme': p.color } as any}
-                                >
-                                    <span className="dot"></span>
-                                    {p.label}
-                                </div>
+                        <div className="personality-pool-grid">
+                            {personalityPool.map((p) => {
+                                const isSelected = form.personalities.some(item => item.label === p.label);
+                                return (
+                                    <div
+                                        key={p.label}
+                                        className={`pool-badge ${isSelected ? 'selected' : ''}`}
+                                        style={{ '--theme': p.color } as any}
+                                        onClick={() => togglePersonality(p)}
+                                    >
+                                        {isSelected && <span className="dot"></span>}
+                                        {p.label}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+
+                    {/* === 5. 时长设置 === */}
+                    <div className="form-section full-width">
+                        <h4 className="section-title"><Clock size={13} /> 预计时长</h4>
+                        <div className="radio-pill-group">
+                            {[
+                                { val: '15', label: '15分钟 (快速热身)' },
+                                { val: '30', label: '30分钟 (标准单面)' },
+                                { val: '45', label: '45分钟 (深度考察)' }
+                            ].map(item => (
+                                <label key={item.val} className={`radio-pill-item ${form.duration === item.val ? 'active' : ''}`}>
+                                    <input type="radio" checked={form.duration === item.val} onChange={() => setForm({ ...form, duration: item.val })} />
+                                    <span>{item.label}</span>
+                                </label>
                             ))}
-                        </div>
-                    </div>
-
-                    {/* 数量与时长 */}
-                    <div className="form-section">
-                        <h4 className="section-title">考官数量</h4>
-                        <div className="counter-input">
-                            <button onClick={() => setForm({ ...form, count: Math.max(1, form.count - 1) })}>-</button>
-                            <span>{form.count} 位</span>
-                            <button onClick={() => setForm({ ...form, count: Math.min(3, form.count + 1) })}>+</button>
-                        </div>
-                    </div>
-
-                    <div className="form-section">
-                        <h4 className="section-title">预计时长</h4>
-                        <div className="unit-input">
-                            <input type="number" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} />
-                            <span className="unit">min</span>
                         </div>
                     </div>
                 </div>
 
                 <div className="modal-footer">
                     <button className="btn-primary-shine" onClick={startInterview}>
-                        <span>立即进入面试</span>
+                        <span>生成考场并进入面试</span>
                         <ChevronRight size={18} />
                     </button>
                 </div>
