@@ -51,7 +51,27 @@ export default function Interview() {
     const [isMicOn, setIsMicOn] = useState(true);
     const [showSettings, setShowSettings] = useState(false);
     const [resolution, setResolution] = useState('1080p');
+    const [embedUrl, setEmbedUrl] = useState<string | null>(null);
+    const [embedLoading, setEmbedLoading] = useState(true);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch('http://localhost:3000/api/create-embed', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success && data.url) {
+                    setEmbedUrl(data.url);
+                } else {
+                    console.error('Failed to create embed:', data);
+                }
+            })
+            .catch(err => console.error('Embed fetch error:', err))
+            .finally(() => setEmbedLoading(false));
+    }, []);
 
     const [revealedScores, setRevealedScores] = useState<number[]>([]);
 
@@ -87,11 +107,27 @@ export default function Interview() {
                         </div>
                     )}
 
-                    {/* AI 数字人占位 */}
-                    <div className="video-placeholder ai-center">
-                        <Sparkles size={64} color="#60a5fa" strokeWidth={1.5} />
-                        <span className="ai-status-text">AI 面试官正在聆听...</span>
-                    </div>
+                    {/* LiveAvatar 数字人 */}
+                    {embedLoading ? (
+                        <div className="video-placeholder ai-center">
+                            <Sparkles size={64} color="#60a5fa" strokeWidth={1.5} />
+                            <span className="ai-status-text">AI 面试官正在加载中...</span>
+                        </div>
+                    ) : embedUrl ? (
+                        <iframe
+                            src={embedUrl}
+                            allow="microphone; camera; autoplay; fullscreen"
+                            title="LiveAvatar AI Interviewer"
+                            referrerPolicy="no-referrer-when-downgrade"
+                            loading="eager"
+                            style={{ aspectRatio: '16/9', width: '100%', height: '100%', border: 'none', borderRadius: '12px' }}
+                        />
+                    ) : (
+                        <div className="video-placeholder ai-center">
+                            <Sparkles size={64} color="#ef4444" strokeWidth={1.5} />
+                            <span className="ai-status-text">数字人加载失败，请刷新重试</span>
+                        </div>
+                    )}
 
                     {/* 用户画面 (画中画) */}
                     <div className="video user-video-pip">

@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { ArrowRight, CheckCircle, UserCircle, ChevronRight, FileText, Video, BarChart2, Monitor, Users, Building2, TrendingUp, Target, PhoneOff, Mic, UserCog, Code, Briefcase, Share2, ArrowLeft, X, Clock, MapPin, Briefcase as BriefcaseIcon, PhoneOff as PhoneOffIcon, Settings, Pause, Server, Sparkles, MessageSquarePlus } from 'lucide-react';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
 import './Home.css';
+import InterviewModal from '../components/InterviewModal';
 
 // 面试配置弹窗组件（提取到外部避免重新挂载动画）
 function InterviewConfigModal({
@@ -780,6 +781,7 @@ export default function Home() {
   
   // 面试配置弹窗状态
   const [showInterviewConfig, setShowInterviewConfig] = useState(false);
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
   const [interviewConfig, setInterviewConfig] = useState({
     company: '',
     position: '',
@@ -1146,7 +1148,7 @@ export default function Home() {
           </div>
 
           {/* Interview */}
-          <div className="feature-card hot" onClick={() => setShowInterviewConfig(true)} style={{ cursor: 'pointer' }}>
+          <div className="feature-card hot" onClick={() => setShowInterviewModal(true)} style={{ cursor: 'pointer' }}>
             <div className="hot-badge">热门</div>
             <div className="feature-icon orange">
               <Video className="w-6 h-6" />
@@ -1466,6 +1468,12 @@ export default function Home() {
         />,
         document.body
       )}
+
+      {/* AI面试配置弹窗 */}
+      <InterviewModal 
+        open={showInterviewModal} 
+        onClose={() => setShowInterviewModal(false)} 
+      />
 
       {/* 模拟面试页面 */}
       {currentView === 'mockInterview' && (

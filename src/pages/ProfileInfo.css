@@ -843,3 +843,448 @@
         width: 100% !important;
     }
 }
+/* =========================================================
+   Part 4: 目标公司信息 - AI 模拟分析
+   ========================================================= */
+
+.ai-simulation-box {
+    margin-top: 28px;
+    padding: 24px;
+    background: linear-gradient(135deg, #f8fafc, #ffffff);
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+/* --- 搜索中 --- */
+.simulation-searching {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.simulation-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.simulation-icon.pulse {
+    color: #3b82f6;
+    animation: pulseIcon 1.5s ease-in-out infinite;
+}
+
+@keyframes pulseIcon {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.search-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.search-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #60a5fa);
+    border-radius: 100px;
+    transition: width 0.1s linear;
+}
+
+.search-sources {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.search-source-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #64748b;
+    opacity: 0;
+    transform: translateX(-8px);
+    transition: all 0.3s ease;
+}
+
+.search-source-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.source-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    color: #3b82f6;
+}
+
+/* --- 思考中 --- */
+.simulation-thinking {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px 0;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.thinking-icon {
+    color: #8b5cf6;
+}
+
+.thinking-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.thinking-dots span {
+    width: 8px;
+    height: 8px;
+    background: #cbd5e1;
+    border-radius: 50%;
+    animation: bounceDot 1.4s infinite ease-in-out both;
+}
+
+.thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+.thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounceDot {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); background: #8b5cf6; }
+}
+
+/* --- 结果展示 --- */
+.simulation-result {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* 知识图谱卡片 */
+.knowledge-graph-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.graph-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+    margin-bottom: 12px;
+}
+
+.knowledge-graph-visual {
+    position: relative;
+    height: 200px;
+    background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.graph-center-node {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+    z-index: 2;
+    text-align: center;
+    padding: 8px;
+}
+
+.graph-main-label {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.graph-sub-label {
+    font-size: 11px;
+    font-weight: 500;
+    opacity: 0.9;
+    line-height: 1.2;
+}
+
+.graph-node {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 64px;
+    height: 52px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    z-index: 2;
+}
+
+.graph-node svg {
+    color: #3b82f6;
+}
+
+.graph-lines {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* AI 报告卡片 */
+.ai-report-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+    padding-bottom: 12px;
+    border-bottom: 1px dashed #e2e8f0;
+}
+
+.report-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.report-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.report-meta {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.report-body {
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+.typewriter-text {
+    margin: 0;
+    font-family: inherit;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.cursor {
+    color: #3b82f6;
+    font-weight: 700;
+    opacity: 0;
+}
+
+.cursor.visible {
+    opacity: 1;
+}
+
+/* =========================================================
+   Part 5: 复杂知识图谱样式覆盖/追加
+   ========================================================= */
+
+.knowledge-graph-complex {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding-top: 8px;
+}
+
+.knowledge-theme-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    box-shadow: 0 12px 30px rgba(59, 130, 246, 0.35);
+    text-align: center;
+    padding: 12px;
+    animation: pulseBadge 3s ease-in-out infinite;
+}
+
+@keyframes pulseBadge {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.03); }
+}
+
+.theme-main {
+    font-size: 18px;
+    font-weight: 800;
+    line-height: 1.2;
+}
+
+.theme-sub {
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0.9;
+    line-height: 1.3;
+}
+
+.knowledge-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    width: 100%;
+}
+
+.knowledge-node-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.25s ease;
+    border-top: 3px solid var(--node-color);
+}
+
+.knowledge-node-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
+}
+
+.knowledge-node-card.full-width {
+    grid-column: span 2;
+}
+
+.node-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.node-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.node-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.node-branches {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.node-branches li {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.node-branches li strong {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.node-branches.inline-five {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    padding-left: 0;
+    list-style: none;
+}
+
+.node-branches.inline-five li {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    font-size: 12px;
+    color: #334155;
+    transition: all 0.2s ease;
+}
+
+.node-branches.inline-five li:hover {
+    background: #ffffff;
+    border-color: var(--node-color);
+    color: var(--node-color);
+}
+
+@media (max-width: 768px) {
+    .knowledge-grid {
+        grid-template-columns: 1fr;
+    }
+    .knowledge-node-card.full-width {
+        grid-column: span 1;
+    }
+    .node-branches.inline-five {
+        grid-template-columns: 1fr 1fr;
+    }
+    .knowledge-theme-badge {
+        width: 120px;
+        height: 120px;
+    }
+    .theme-main {
+        font-size: 16px;
+    }
+}
