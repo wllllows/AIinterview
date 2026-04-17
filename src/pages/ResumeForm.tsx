@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Link as LinkIcon } from 'lucide-react';
 import './ProfileInfo.css';
 
@@ -28,6 +29,7 @@ const Field = ({ label, placeholder, type = "text", required = true, tip = "" }:
 );
 
 export default function ResumeForm() {
+    const navigate = useNavigate();
     return (
         // 🌟 唯一改动的地方：改成了 Tab 面板的包装器，完美融入个人中心
         <div className="tab-pane fade-in-up resume-wrapper">
@@ -240,7 +242,7 @@ export default function ResumeForm() {
 
             {/* 底部按钮区 */}
             <div className="form-actions" style={{ borderTop: '1px solid #f1f5f9', marginTop: '40px' }}>
-                <button className="btn-primary">提交并保存</button>
+                <button className="btn-primary" onClick={() => navigate('/app', { state: { direction: 'backward', scrollToFeatures: true } })}>提交并保存</button>
             </div>
 
         </div>

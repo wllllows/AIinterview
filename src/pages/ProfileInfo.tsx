@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { BookOpen, FileText, Clock, ChevronRight, Target, Zap, PlayCircle, BarChart2 } from 'lucide-react';
 import ResumeForm from './ResumeForm';
 import './ProfileInfo.css';
 
 export default function ProfileCenter() {
-    const [activeTab, setActiveTab] = useState<'growth' | 'learning' | 'resume'>('growth');
+    const [searchParams, setSearchParams] = useSearchParams();
+    const initialTab = (searchParams.get('tab') as 'growth' | 'learning' | 'resume' | null) || 'growth';
+    const [activeTab, setActiveTab] = useState<'growth' | 'learning' | 'resume'>(initialTab);
+
+    useEffect(() => {
+        const tabFromUrl = searchParams.get('tab') as 'growth' | 'learning' | 'resume' | null;
+        if (tabFromUrl && ['growth', 'learning', 'resume'].includes(tabFromUrl) && tabFromUrl !== activeTab) {
+            setActiveTab(tabFromUrl);
+        }
+    }, [searchParams]);
 
     const historyRecords = [
         { id: 1, date: '2026-04-12', company: '字节跳动', position: '前端开发', score: 95, tags: ['表现优异', '技术扎实'] },
@@ -160,13 +170,13 @@ export default function ProfileCenter() {
                 </div>
 
                 <div className="segmented-control">
-                    <button className={`segment-btn ${activeTab === 'growth' ? 'active' : ''}`} onClick={() => setActiveTab('growth')}>
+                    <button className={`segment-btn ${activeTab === 'growth' ? 'active' : ''}`} onClick={() => { setActiveTab('growth'); setSearchParams({ tab: 'growth' }); }}>
                         <BarChart2 size={14} style={{ marginRight: '4px' }} /> 能力洞察
                     </button>
-                    <button className={`segment-btn ${activeTab === 'learning' ? 'active' : ''}`} onClick={() => setActiveTab('learning')}>
+                    <button className={`segment-btn ${activeTab === 'learning' ? 'active' : ''}`} onClick={() => { setActiveTab('learning'); setSearchParams({ tab: 'learning' }); }}>
                         <Zap size={14} style={{ marginRight: '4px' }} /> 突破路径
                     </button>
-                    <button className={`segment-btn ${activeTab === 'resume' ? 'active' : ''}`} onClick={() => setActiveTab('resume')}>
+                    <button className={`segment-btn ${activeTab === 'resume' ? 'active' : ''}`} onClick={() => { setActiveTab('resume'); setSearchParams({ tab: 'resume' }); }}>
                         <FileText size={14} style={{ marginRight: '4px' }} /> 个人档案
                     </button>
                 </div>

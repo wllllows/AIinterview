@@ -399,3 +399,51 @@
     background: #fee2e2;
     color: #ef4444;
 }
+/* --- 面试形式选择 --- */
+.interview-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.interview-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-input);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.interview-type-card:hover {
+    background: white;
+    border-color: var(--border-light);
+}
+
+.interview-type-card.active {
+    background: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
+}
+
+.interview-type-img {
+    width: 64px;
+    height: 48px;
+    object-fit: contain;
+    border-radius: 6px;
+}
+
+.interview-type-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.interview-type-card.active .interview-type-name {
+    color: var(--primary);
+}

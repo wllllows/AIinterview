@@ -24,6 +24,13 @@ export default function InterviewModal({ open, onClose }: Props) {
         { label: '注重实践', color: '#f97316' }, { label: '学术派', color: '#6366f1' },
     ];
 
+    const interviewTypes = [
+        { id: 'oneToOne', name: '一对一面试', image: '/src/assets/OneToOne.png' },
+        { id: 'oneToMany', name: '一对多面试', image: '/src/assets/OneToMany.png' },
+        { id: 'manyToMany', name: '多对多面试', image: '/src/assets/ManyToMany.png' },
+        { id: 'manyToOne', name: '多对一面试', image: '/src/assets/ManyToOne.png' },
+    ];
+
     // 🌟 核心升级：数据结构完全贴合真实的面试业务流
     const [form, setForm] = useState({
         company: companyList[0],
@@ -34,6 +41,7 @@ export default function InterviewModal({ open, onClose }: Props) {
         jdText: '',               // 目标岗位的 JD
         personalities: [] as typeof personalityPool,
         duration: '30',           // 15, 30, 45 分钟
+        interviewType: 'oneToOne', // 面试形式
     })
 
     // 选中特质 (限制最多选 2 个，保证 AI 人设不精神分裂)
@@ -112,7 +120,24 @@ export default function InterviewModal({ open, onClose }: Props) {
                         </div>
                     </div>
 
-                    {/* === 2. 面试维度 (职级 + 轮次) === */}
+                    {/* === 2. 面试形式 === */}
+                    <div className="form-section full-width">
+                        <h4 className="section-title"><Users size={13} /> 面试形式</h4>
+                        <div className="interview-type-grid">
+                            {interviewTypes.map((type) => (
+                                <div
+                                    key={type.id}
+                                    className={`interview-type-card ${form.interviewType === type.id ? 'active' : ''}`}
+                                    onClick={() => setForm({ ...form, interviewType: type.id })}
+                                >
+                                    <img src={type.image} alt={type.name} className="interview-type-img" />
+                                    <span className="interview-type-name">{type.name}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* === 3. 面试维度 (职级 + 轮次) === */}
                     <div className="form-section">
                         <h4 className="section-title"><BarChart3 size={13} /> 目标职级</h4>
                         <div className="radio-pill-group vertical">
