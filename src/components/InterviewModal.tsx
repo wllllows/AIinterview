@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Sparkles, Building, BarChart3, Users, ChevronRight, RefreshCw, Briefcase, FileText, Clock, Target } from 'lucide-react'
+import { X, Sparkles, Building, BarChart3, Users, ChevronRight, RefreshCw, Briefcase, FileText, Clock, Target, Monitor } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import './InterviewModal.css'
 
@@ -42,6 +42,7 @@ export default function InterviewModal({ open, onClose }: Props) {
         personalities: [] as typeof personalityPool,
         duration: '30',           // 15, 30, 45 分钟
         interviewType: 'oneToOne', // 面试形式
+        interviewMode: 'online',   // 线上面试 / 线下面试
     })
 
     // 选中特质 (限制最多选 2 个，保证 AI 人设不精神分裂)
@@ -120,7 +121,23 @@ export default function InterviewModal({ open, onClose }: Props) {
                         </div>
                     </div>
 
-                    {/* === 2. 面试形式 === */}
+                    {/* === 2. 面试形式 (线上/线下) === */}
+                    <div className="form-section full-width">
+                        <h4 className="section-title"><Monitor size={13} /> 面试形式</h4>
+                        <div className="radio-pill-group">
+                            {[
+                                { val: 'online', label: '线上面试' },
+                                { val: 'offline', label: '线下面试' }
+                            ].map(item => (
+                                <label key={item.val} className={`radio-pill-item ${form.interviewMode === item.val ? 'active' : ''}`}>
+                                    <input type="radio" checked={form.interviewMode === item.val} onChange={() => setForm({ ...form, interviewMode: item.val })} />
+                                    <span>{item.label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* === 3. 面试形式 (一对一/一对多等) === */}
                     <div className="form-section full-width">
                         <h4 className="section-title"><Users size={13} /> 面试形式</h4>
                         <div className="interview-type-grid">

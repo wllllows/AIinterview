@@ -808,6 +808,30 @@ export default function Home() {
   const [writtenTestAnswers, setWrittenTestAnswers] = useState<Record<string, any>>({});
   const [writtenTestSubmitted, setWrittenTestSubmitted] = useState(false);
 
+  // 笔试倒计时：从 32:15 开始
+  const WRITTEN_TOTAL_SECONDS = 32 * 60 + 15; // 1935
+  const [writtenRemainingSec, setWrittenRemainingSec] = useState(WRITTEN_TOTAL_SECONDS);
+
+  useEffect(() => {
+    if (writtenRemainingSec <= 0) return;
+    const timer = setInterval(() => {
+      setWrittenRemainingSec(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatWrittenTime = (totalSec: number) => {
+    const m = Math.floor(totalSec / 60);
+    const s = totalSec % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
   // 反馈指导页面状态
   const [feedbackTab, setFeedbackTab] = useState<'interview' | 'writtenTest'>('interview');
   const [feedbackView, setFeedbackView] = useState<'report' | 'chat'>('report');
@@ -1932,7 +1956,7 @@ export default function Home() {
                 color: '#3b82f6',
                 fontFamily: 'monospace',
               }}>
-                剩余 32:15
+                剩余 {formatWrittenTime(writtenRemainingSec)}
               </div>
             </div>
           </header>
@@ -1973,7 +1997,7 @@ export default function Home() {
                   }}>
                     选择题
                   </span>
-                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 1 题 / 共 3 题</span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 1 题 / 共 6 题</span>
                 </div>
                 <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
                   在 React 中，useEffect 的依赖数组如果为空数组 []，它的执行时机是什么？
@@ -2043,6 +2067,471 @@ export default function Home() {
                 )}
               </div>
 
+              {/* q4 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#3b82f6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    选择题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 2 题 / 共 6 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  在 CSS 标准盒模型中，元素的 width 属性指的是哪个部分的宽度？
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { id: 'A', text: 'content + padding + border + margin' },
+                    { id: 'B', text: 'content + padding + border' },
+                    { id: 'C', text: 'content 的宽度' },
+                    { id: 'D', text: 'padding 的宽度' },
+                  ].map((option) => (
+                    <label
+                      key={option.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        border: `2px solid ${writtenTestAnswers.q4 === option.id ? '#3b82f6' : '#e2e8f0'}`,
+                        backgroundColor: writtenTestSubmitted
+                          ? option.id === 'C'
+                            ? '#dcfce7'
+                            : writtenTestAnswers.q4 === option.id && option.id !== 'C'
+                              ? '#fee2e2'
+                              : '#fff'
+                          : writtenTestAnswers.q4 === option.id
+                            ? '#eff6ff'
+                            : '#fff',
+                        cursor: writtenTestSubmitted ? 'default' : 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="q4"
+                        value={option.id}
+                        checked={writtenTestAnswers.q4 === option.id}
+                        onChange={() => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q4: option.id })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        disabled={writtenTestSubmitted}
+                      />
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{option.text}</span>
+                    </label>
+                  ))}
+                </div>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: writtenTestAnswers.q4 === 'C' ? '#dcfce7' : '#fee2e2',
+                    border: `1px solid ${writtenTestAnswers.q4 === 'C' ? '#86efac' : '#fecaca'}`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: writtenTestAnswers.q4 === 'C' ? '#16a34a' : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {writtenTestAnswers.q4 === 'C' ? '✅ 回答正确' : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：C。在标准盒模型中，width 只包含 content 区域的宽度，不包括 padding、border 和 margin。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q5 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#3b82f6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    选择题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 3 题 / 共 6 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  以下哪个方法可以将多个 Promise 实例包装成一个新的 Promise，并在所有 Promise 都成功后才 resolve？
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { id: 'A', text: 'Promise.race()' },
+                    { id: 'B', text: 'Promise.all()' },
+                    { id: 'C', text: 'Promise.any()' },
+                    { id: 'D', text: 'Promise.resolve()' },
+                  ].map((option) => (
+                    <label
+                      key={option.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        border: `2px solid ${writtenTestAnswers.q5 === option.id ? '#3b82f6' : '#e2e8f0'}`,
+                        backgroundColor: writtenTestSubmitted
+                          ? option.id === 'B'
+                            ? '#dcfce7'
+                            : writtenTestAnswers.q5 === option.id && option.id !== 'B'
+                              ? '#fee2e2'
+                              : '#fff'
+                          : writtenTestAnswers.q5 === option.id
+                            ? '#eff6ff'
+                            : '#fff',
+                        cursor: writtenTestSubmitted ? 'default' : 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="q5"
+                        value={option.id}
+                        checked={writtenTestAnswers.q5 === option.id}
+                        onChange={() => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q5: option.id })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        disabled={writtenTestSubmitted}
+                      />
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{option.text}</span>
+                    </label>
+                  ))}
+                </div>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: writtenTestAnswers.q5 === 'B' ? '#dcfce7' : '#fee2e2',
+                    border: `1px solid ${writtenTestAnswers.q5 === 'B' ? '#86efac' : '#fecaca'}`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: writtenTestAnswers.q5 === 'B' ? '#16a34a' : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {writtenTestAnswers.q5 === 'B' ? '✅ 回答正确' : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：B。Promise.all() 接收一个 Promise 数组，当所有 Promise 都成功时返回结果数组；Promise.race() 返回最快完成的那个。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q6 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#3b82f6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    选择题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 4 题 / 共 6 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  在 JavaScript 严格模式下，普通函数中 this 的默认值是什么？
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { id: 'A', text: 'window' },
+                    { id: 'B', text: 'undefined' },
+                    { id: 'C', text: 'null' },
+                    { id: 'D', text: '函数本身' },
+                  ].map((option) => (
+                    <label
+                      key={option.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        border: `2px solid ${writtenTestAnswers.q6 === option.id ? '#3b82f6' : '#e2e8f0'}`,
+                        backgroundColor: writtenTestSubmitted
+                          ? option.id === 'B'
+                            ? '#dcfce7'
+                            : writtenTestAnswers.q6 === option.id && option.id !== 'B'
+                              ? '#fee2e2'
+                              : '#fff'
+                          : writtenTestAnswers.q6 === option.id
+                            ? '#eff6ff'
+                            : '#fff',
+                        cursor: writtenTestSubmitted ? 'default' : 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="q6"
+                        value={option.id}
+                        checked={writtenTestAnswers.q6 === option.id}
+                        onChange={() => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q6: option.id })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        disabled={writtenTestSubmitted}
+                      />
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{option.text}</span>
+                    </label>
+                  ))}
+                </div>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: writtenTestAnswers.q6 === 'B' ? '#dcfce7' : '#fee2e2',
+                    border: `1px solid ${writtenTestAnswers.q6 === 'B' ? '#86efac' : '#fecaca'}`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: writtenTestAnswers.q6 === 'B' ? '#16a34a' : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {writtenTestAnswers.q6 === 'B' ? '✅ 回答正确' : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：B。在严格模式下，普通函数调用时 this 不再默认指向 window，而是 undefined。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q7 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#3b82f6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    选择题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 5 题 / 共 6 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  以下代码的输出顺序是什么？<br />console.log('1');<br />setTimeout(() =&gt; console.log('2'), 0);<br />Promise.resolve().then(() =&gt; console.log('3'));<br />console.log('4');
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { id: 'A', text: '1 2 3 4' },
+                    { id: 'B', text: '1 4 3 2' },
+                    { id: 'C', text: '1 4 2 3' },
+                    { id: 'D', text: '1 3 4 2' },
+                  ].map((option) => (
+                    <label
+                      key={option.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        border: `2px solid ${writtenTestAnswers.q7 === option.id ? '#3b82f6' : '#e2e8f0'}`,
+                        backgroundColor: writtenTestSubmitted
+                          ? option.id === 'B'
+                            ? '#dcfce7'
+                            : writtenTestAnswers.q7 === option.id && option.id !== 'B'
+                              ? '#fee2e2'
+                              : '#fff'
+                          : writtenTestAnswers.q7 === option.id
+                            ? '#eff6ff'
+                            : '#fff',
+                        cursor: writtenTestSubmitted ? 'default' : 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="q7"
+                        value={option.id}
+                        checked={writtenTestAnswers.q7 === option.id}
+                        onChange={() => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q7: option.id })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        disabled={writtenTestSubmitted}
+                      />
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{option.text}</span>
+                    </label>
+                  ))}
+                </div>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: writtenTestAnswers.q7 === 'B' ? '#dcfce7' : '#fee2e2',
+                    border: `1px solid ${writtenTestAnswers.q7 === 'B' ? '#86efac' : '#fecaca'}`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: writtenTestAnswers.q7 === 'B' ? '#16a34a' : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {writtenTestAnswers.q7 === 'B' ? '✅ 回答正确' : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：B。同步代码先执行（1, 4），然后微任务 Promise（3），最后宏任务 setTimeout（2），所以顺序是 1 4 3 2。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q8 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#3b82f6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    选择题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 6 题 / 共 6 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  HTTP/2 相比 HTTP/1.1 的主要改进不包括以下哪一项？
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { id: 'A', text: '多路复用（Multiplexing）' },
+                    { id: 'B', text: '头部压缩（Header Compression）' },
+                    { id: 'C', text: '服务器推送（Server Push）' },
+                    { id: 'D', text: '强制使用 TLS 加密' },
+                  ].map((option) => (
+                    <label
+                      key={option.id}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        borderRadius: '10px',
+                        border: `2px solid ${writtenTestAnswers.q8 === option.id ? '#3b82f6' : '#e2e8f0'}`,
+                        backgroundColor: writtenTestSubmitted
+                          ? option.id === 'D'
+                            ? '#dcfce7'
+                            : writtenTestAnswers.q8 === option.id && option.id !== 'D'
+                              ? '#fee2e2'
+                              : '#fff'
+                          : writtenTestAnswers.q8 === option.id
+                            ? '#eff6ff'
+                            : '#fff',
+                        cursor: writtenTestSubmitted ? 'default' : 'pointer',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="q8"
+                        value={option.id}
+                        checked={writtenTestAnswers.q8 === option.id}
+                        onChange={() => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q8: option.id })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                        disabled={writtenTestSubmitted}
+                      />
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{option.text}</span>
+                    </label>
+                  ))}
+                </div>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: writtenTestAnswers.q8 === 'D' ? '#dcfce7' : '#fee2e2',
+                    border: `1px solid ${writtenTestAnswers.q8 === 'D' ? '#86efac' : '#fecaca'}`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: writtenTestAnswers.q8 === 'D' ? '#16a34a' : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {writtenTestAnswers.q8 === 'D' ? '✅ 回答正确' : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：D。HTTP/2 支持多路复用、头部压缩和服务器推送，但并不强制要求使用 TLS（虽然主流浏览器都要求 HTTPS）。
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* 填空题 */}
               <div style={{
                 backgroundColor: '#fff',
@@ -2066,7 +2555,7 @@ export default function Home() {
                   }}>
                     填空题
                   </span>
-                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 2 题 / 共 3 题</span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 1 题 / 共 3 题</span>
                 </div>
                 <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
                   HTTP 状态码 301 表示
@@ -2162,7 +2651,245 @@ export default function Home() {
                 )}
               </div>
 
-              {/* 大题 */}
+              {/* q9/q9b */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#8b5cf6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    填空题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 2 题 / 共 3 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  在 JavaScript 中，typeof null 的结果是
+                  <input
+                    type="text"
+                    value={writtenTestAnswers.q9 || ''}
+                    onChange={(e) => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q9: e.target.value })}
+                    disabled={writtenTestSubmitted}
+                    placeholder="请填写"
+                    style={{
+                      width: '140px',
+                      margin: '0 8px',
+                      padding: '6px 12px',
+                      border: writtenTestSubmitted
+                        ? (writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object')
+                          ? '2px solid #22c55e'
+                          : '2px solid #ef4444'
+                        : '2px solid #e2e8f0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: writtenTestSubmitted
+                        ? (writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object')
+                          ? '#dcfce7'
+                          : '#fee2e2'
+                        : '#fff',
+                    }}
+                  />
+                  ，而 typeof [] 的结果是
+                  <input
+                    type="text"
+                    value={writtenTestAnswers.q9b || ''}
+                    onChange={(e) => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q9b: e.target.value })}
+                    disabled={writtenTestSubmitted}
+                    placeholder="请填写"
+                    style={{
+                      width: '140px',
+                      margin: '0 8px',
+                      padding: '6px 12px',
+                      border: writtenTestSubmitted
+                        ? (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object')
+                          ? '2px solid #22c55e'
+                          : '2px solid #ef4444'
+                        : '2px solid #e2e8f0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: writtenTestSubmitted
+                        ? (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object')
+                          ? '#dcfce7'
+                          : '#fee2e2'
+                        : '#fff',
+                    }}
+                  />
+                  。
+                </h3>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor:
+                      ((writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object') &&
+                       (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object'))
+                        ? '#dcfce7'
+                        : '#fee2e2',
+                    border: `1px solid ${
+                      ((writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object') &&
+                       (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object'))
+                        ? '#86efac'
+                        : '#fecaca'
+                    }`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color:
+                        ((writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object') &&
+                         (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object'))
+                          ? '#16a34a'
+                          : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {((writtenTestAnswers.q9 || '').trim().toLowerCase().includes('object') &&
+                        (writtenTestAnswers.q9b || '').trim().toLowerCase().includes('object'))
+                        ? '✅ 回答正确'
+                        : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：typeof null 返回 &quot;object&quot; 是 JavaScript 的历史 bug；typeof [] 也返回 &quot;object&quot;，因为数组是对象的一种。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q10/q10b */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#8b5cf6',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    填空题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 3 题 / 共 3 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  CSS 中，position:
+                  <input
+                    type="text"
+                    value={writtenTestAnswers.q10 || ''}
+                    onChange={(e) => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q10: e.target.value })}
+                    disabled={writtenTestSubmitted}
+                    placeholder="请填写"
+                    style={{
+                      width: '140px',
+                      margin: '0 8px',
+                      padding: '6px 12px',
+                      border: writtenTestSubmitted
+                        ? (writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute')
+                          ? '2px solid #22c55e'
+                          : '2px solid #ef4444'
+                        : '2px solid #e2e8f0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: writtenTestSubmitted
+                        ? (writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute')
+                          ? '#dcfce7'
+                          : '#fee2e2'
+                        : '#fff',
+                    }}
+                  />
+                  可以使元素相对于其最近的定位祖先元素进行定位，position:
+                  <input
+                    type="text"
+                    value={writtenTestAnswers.q10b || ''}
+                    onChange={(e) => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q10b: e.target.value })}
+                    disabled={writtenTestSubmitted}
+                    placeholder="请填写"
+                    style={{
+                      width: '140px',
+                      margin: '0 8px',
+                      padding: '6px 12px',
+                      border: writtenTestSubmitted
+                        ? (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed')
+                          ? '2px solid #22c55e'
+                          : '2px solid #ef4444'
+                        : '2px solid #e2e8f0',
+                      borderRadius: '6px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      backgroundColor: writtenTestSubmitted
+                        ? (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed')
+                          ? '#dcfce7'
+                          : '#fee2e2'
+                        : '#fff',
+                    }}
+                  />
+                  可以使元素相对于视口固定。
+                </h3>
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor:
+                      ((writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute') &&
+                       (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed'))
+                        ? '#dcfce7'
+                        : '#fee2e2',
+                    border: `1px solid ${
+                      ((writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute') &&
+                       (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed'))
+                        ? '#86efac'
+                        : '#fecaca'
+                    }`,
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color:
+                        ((writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute') &&
+                         (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed'))
+                          ? '#16a34a'
+                          : '#ef4444',
+                      marginBottom: '4px',
+                    }}>
+                      {((writtenTestAnswers.q10 || '').trim().toLowerCase().includes('absolute') &&
+                        (writtenTestAnswers.q10b || '').trim().toLowerCase().includes('fixed'))
+                        ? '✅ 回答正确'
+                        : '❌ 回答错误'}
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b' }}>
+                      正确答案：absolute 定位相对于最近的定位祖先，fixed 定位相对于浏览器视口固定。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* 简答题 */}
               <div style={{
                 backgroundColor: '#fff',
                 borderRadius: '16px',
@@ -2185,7 +2912,7 @@ export default function Home() {
                   }}>
                     简答题
                   </span>
-                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 3 题 / 共 3 题</span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 1 题 / 共 2 题</span>
                 </div>
                 <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
                   在不使用第三方库的前提下，如何设计一个虚拟列表（Virtual List）来解决长列表渲染卡顿问题？请简述核心思路。
@@ -2237,6 +2964,82 @@ export default function Home() {
                       <br />2. 根据每行固定高度计算总高度撑开滚动条；
                       <br />3. 在滚动事件中通过 scrollTop 计算当前可视区域的起始索引和结束索引；
                       <br />4. 只渲染这几十个 DOM 节点，并利用绝对定位推到正确的位置。
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* q11 */}
+              <div style={{
+                backgroundColor: '#fff',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '1px solid #e2e8f0',
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '16px',
+                }}>
+                  <span style={{
+                    padding: '4px 10px',
+                    backgroundColor: '#f59e0b',
+                    color: '#fff',
+                    borderRadius: '6px',
+                    fontSize: '12px',
+                    fontWeight: 600,
+                  }}>
+                    简答题
+                  </span>
+                  <span style={{ fontSize: '14px', color: '#64748b' }}>第 2 题 / 共 2 题</span>
+                </div>
+                <h3 style={{ fontSize: '16px', fontWeight: 500, color: '#1e293b', marginBottom: '16px' }}>
+                  请简述浏览器从输入 URL 到页面渲染完成的主要过程。
+                </h3>
+                <textarea
+                  value={writtenTestAnswers.q11 || ''}
+                  onChange={(e) => !writtenTestSubmitted && setWrittenTestAnswers({ ...writtenTestAnswers, q11: e.target.value })}
+                  disabled={writtenTestSubmitted}
+                  placeholder="请输入您的答案..."
+                  rows={5}
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: writtenTestSubmitted
+                      ? (writtenTestAnswers.q11 || '').trim().length > 20
+                        ? '2px solid #22c55e'
+                        : '2px solid #ef4444'
+                      : '2px solid #e2e8f0',
+                    borderRadius: '10px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    resize: 'vertical',
+                    backgroundColor: writtenTestSubmitted
+                      ? (writtenTestAnswers.q11 || '').trim().length > 20
+                        ? '#dcfce7'
+                        : '#fee2e2'
+                      : '#fff',
+                  }}
+                />
+                {writtenTestSubmitted && (
+                  <div style={{
+                    marginTop: '16px',
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    backgroundColor: '#eff6ff',
+                    border: '1px solid #bfdbfe',
+                  }}>
+                    <div style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#3b82f6',
+                      marginBottom: '8px',
+                    }}>
+                      参考答案
+                    </div>
+                    <div style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>
+                      浏览器主要经历以下过程：1. DNS 解析获取 IP 地址；2. 建立 TCP 连接；3. 发送 HTTP 请求；4. 服务器返回 HTML；5. 浏览器解析 HTML 构建 DOM 树；6. 解析 CSS 构建 CSSOM；7. 合并为渲染树；8. 布局（Layout）计算元素位置；9. 绘制（Paint）到屏幕上。
                     </div>
                   </div>
                 )}

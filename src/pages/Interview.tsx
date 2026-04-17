@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
     Mic,
     MicOff,
@@ -54,6 +54,12 @@ export default function Interview() {
     const [embedUrl, setEmbedUrl] = useState<string | null>(null);
     const [embedLoading, setEmbedLoading] = useState(true);
     const navigate = useNavigate();
+    const location = useLocation();
+
+    const incomingMode = location.state?.config?.interviewMode;
+    const initialMode: 'offline' | 'online-pc' | 'online-mobile' =
+        incomingMode === 'offline' ? 'offline' : 'online-pc';
+    const [deviceMode, setDeviceMode] = useState(initialMode);
 
     useEffect(() => {
         fetch('http://localhost:3000/api/create-embed', {
@@ -74,6 +80,31 @@ export default function Interview() {
     }, []);
 
     const [revealedScores, setRevealedScores] = useState<number[]>([]);
+
+    // 模拟倒计时：从 00:15:32 开始
+    const TOTAL_SECONDS = 15 * 60 + 32; // 932
+    const [remainingSeconds, setRemainingSeconds] = useState(TOTAL_SECONDS);
+
+    useEffect(() => {
+        if (remainingSeconds <= 0) return;
+        const timer = setInterval(() => {
+            setRemainingSeconds(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const formatTime = (totalSec: number) => {
+        const h = Math.floor(totalSec / 3600);
+        const m = Math.floor((totalSec % 3600) / 60);
+        const s = totalSec % 60;
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    };
 
     const handleRevealScore = (id: number) => {
         if (!revealedScores.includes(id)) {
@@ -129,46 +160,51 @@ export default function Interview() {
                         </div>
                     )}
 
-                    {/* 用户画面 (画中画) */}
-                    <div className="video user-video-pip">
-                        <User size={28} color="#cbd5e1" />
-                        <span>我的镜头</span>
-                    </div>
+                    {/* 纯绿色背景层 */}
+                    <div className="green-screen-layer" />
 
-                    {/* 底部玻璃质感控制栏 (Dock) */}
-                    <div className="floating-control-bar">
-                        <button
-                            className={`icon-btn ${!isMicOn ? 'muted' : ''}`}
-                            onClick={() => setIsMicOn(!isMicOn)}
-                            title={isMicOn ? "静音" : "开启麦克风"}
-                        >
-                            {isMicOn ? <Mic size={20} /> : <MicOff size={20} />}
-                        </button>
+                    {deviceMode !== 'offline' && (
+                        <div className={`video user-video-pip ${deviceMode === 'online-mobile' ? 'user-video-pip--mobile' : ''}`}>
+                            <User size={28} color="#cbd5e1" />
+                            <span>我的镜头</span>
+                        </div>
+                    )}
 
-                        <button
-                            className={`icon-btn ${isPaused ? 'active-orange' : ''}`}
-                            onClick={() => setIsPaused(!isPaused)}
-                            title={isPaused ? "继续" : "暂停"}
-                        >
-                            {isPaused ? <Play size={20} fill="currentColor" /> : <Pause size={20} />}
-                        </button>
+                    {deviceMode !== 'offline' && (
+                        <div className={`floating-control-bar ${deviceMode === 'online-mobile' ? 'floating-control-bar--mobile' : ''}`}>
+                            <button
+                                className={`icon-btn ${!isMicOn ? 'muted' : ''}`}
+                                onClick={() => setIsMicOn(!isMicOn)}
+                                title={isMicOn ? "静音" : "开启麦克风"}
+                            >
+                                {isMicOn ? <Mic size={20} /> : <MicOff size={20} />}
+                            </button>
 
-                        <button
-                            className="icon-btn"
-                            onClick={() => setShowSettings(!showSettings)}
-                            title="设置"
-                        >
-                            <Settings size={20} />
-                        </button>
+                            <button
+                                className={`icon-btn ${isPaused ? 'active-orange' : ''}`}
+                                onClick={() => setIsPaused(!isPaused)}
+                                title={isPaused ? "继续" : "暂停"}
+                            >
+                                {isPaused ? <Play size={20} fill="currentColor" /> : <Pause size={20} />}
+                            </button>
 
-                        <div className="control-divider"></div>
+                            <button
+                                className="icon-btn"
+                                onClick={() => setShowSettings(!showSettings)}
+                                title="设置"
+                            >
+                                <Settings size={20} />
+                            </button>
 
-                        {/* 结束面试按钮 */}
-                        <button className="danger-btn" onClick={handleEndInterview}>
-                            <PhoneOff size={18} />
-                            <span>结束面试</span>
-                        </button>
-                    </div>
+                            <div className="control-divider"></div>
+
+                            {/* 结束面试按钮 */}
+                            <button className="danger-btn" onClick={handleEndInterview}>
+                                <PhoneOff size={18} />
+                                <span>结束面试</span>
+                            </button>
+                        </div>
+                    )}
 
                     {/* 设置小窗口 */}
                     {showSettings && (
@@ -200,8 +236,17 @@ export default function Interview() {
                 <div className="sidebar-header">
                     <div className="info-item">
                         <span className="recording-dot"></span>
-                        <span>00:15:32</span>
+                        <span>{formatTime(remainingSeconds)}</span>
                     </div>
+                    <select
+                        className="mode-select"
+                        value={deviceMode}
+                        onChange={(e) => setDeviceMode(e.target.value as 'offline' | 'online-pc' | 'online-mobile')}
+                    >
+                        <option value="offline">线下面试</option>
+                        <option value="online-pc">线上电脑端</option>
+                        <option value="online-mobile">线上手机端</option>
+                    </select>
                     <div className="info-item"><Clock size={16} /> 实时转写中</div>
                 </div>
 
