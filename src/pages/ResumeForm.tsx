@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Link as LinkIcon, Search, BrainCircuit, Sparkles, Globe, FileText, Cpu, Building2, Target, BookOpen, Users } from 'lucide-react';
-import './ProfileInfo.css';
+import './ResumeForm.css';
 
 // 通用的区块组件：处理左侧大标题和右侧内容布局
 const Section = ({ title, children }: { title: string; children: React.ReactNode }) => (

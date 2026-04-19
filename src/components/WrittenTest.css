@@ -1,0 +1,368 @@
+/* =========================================================
+   WrittenTest.css (笔试全屏界面样式)
+   ========================================================= */
+
+:root {
+    --primary: #3b82f6;
+    --primary-light: #eff6ff;
+    --primary-dark: #2563eb;
+    --bg-app: #f8fafc;
+    --bg-card: rgba(255, 255, 255, 0.98);
+    --bg-input: #f1f5f9;
+    --border-light: #e2e8f0;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- 页面整体布局 --- */
+.wt-container {
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-app);
+    z-index: 3000;
+    display: flex;
+    flex-direction: column;
+    animation: wtFadeIn 0.4s ease-out;
+}
+
+@keyframes wtFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- 顶部导航栏 --- */
+.wt-header {
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-light);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.wt-header-left,
+.wt-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.wt-back-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border-light);
+    border-radius: 10px;
+    background-color: var(--bg-card);
+    color: var(--text-muted);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.wt-back-btn:hover {
+    background-color: var(--bg-input);
+    color: var(--text-main);
+}
+
+.wt-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+}
+
+.wt-meta-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.wt-timer {
+    padding: 8px 16px;
+    background-color: var(--primary-light);
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary);
+    font-family: monospace;
+    letter-spacing: 1px;
+}
+
+/* --- 主体答题区 --- */
+.wt-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 32px 24px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.wt-main::-webkit-scrollbar {
+    display: none;
+}
+
+.wt-content-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* --- 题目卡片 --- */
+.wt-card {
+    background-color: var(--bg-card);
+    border-radius: 20px;
+    padding: 28px 32px;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);
+    transition: var(--transition);
+}
+
+.wt-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.wt-q-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.wt-badge {
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+}
+
+.wt-badge.choice {
+    background-color: var(--primary);
+}
+
+.wt-badge.blank {
+    background-color: #8b5cf6;
+}
+
+.wt-badge.text {
+    background-color: #f59e0b;
+}
+
+.wt-q-index {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.wt-q-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-main);
+    margin: 0 0 20px 0;
+    line-height: 1.6;
+}
+
+/* --- 单选题选项 --- */
+.wt-options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wt-option-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border-light);
+    background-color: var(--bg-card);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.wt-option-label:hover:not(.disabled) {
+    background-color: var(--bg-input);
+}
+
+.wt-option-label.selected {
+    border-color: var(--primary);
+    background-color: var(--primary-light);
+}
+
+.wt-option-label.correct {
+    border-color: #22c55e;
+    background-color: #dcfce7;
+}
+
+.wt-option-label.wrong {
+    border-color: #ef4444;
+    background-color: #fee2e2;
+}
+
+.wt-option-label.disabled {
+    cursor: default;
+}
+
+.wt-option-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary);
+}
+
+.wt-option-text {
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 500;
+}
+
+/* --- 填空与简答输入框 --- */
+.wt-input-inline {
+    width: 140px;
+    margin: 0 8px;
+    padding: 8px 16px;
+    border: 2px solid transparent;
+    background-color: var(--bg-input);
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-main);
+    outline: none;
+    transition: var(--transition);
+    display: inline-block;
+}
+
+.wt-textarea {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid transparent;
+    background-color: var(--bg-input);
+    border-radius: 16px;
+    font-size: 14px;
+    color: var(--text-main);
+    outline: none;
+    resize: vertical;
+    box-sizing: border-box;
+    transition: var(--transition);
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+.wt-input-inline:focus:not(:disabled),
+.wt-textarea:focus:not(:disabled) {
+    background-color: white;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.wt-input-inline.correct,
+.wt-textarea.correct {
+    background-color: #dcfce7;
+    border-color: #22c55e;
+}
+
+.wt-input-inline.wrong,
+.wt-textarea.wrong {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+}
+
+/* --- 判卷反馈框 --- */
+.wt-feedback-box {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+}
+
+.wt-feedback-box.correct {
+    background-color: #dcfce7;
+    border-color: #86efac;
+}
+
+.wt-feedback-box.wrong {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+}
+
+.wt-feedback-box.info {
+    background-color: var(--primary-light);
+    border-color: #bfdbfe;
+}
+
+.wt-feedback-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.wt-feedback-title.correct {
+    color: #16a34a;
+}
+
+.wt-feedback-title.wrong {
+    color: #ef4444;
+}
+
+.wt-feedback-title.info {
+    color: var(--primary);
+}
+
+.wt-feedback-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* --- 底部操作栏 --- */
+.wt-footer {
+    padding: 20px 32px;
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.wt-btn-primary {
+    padding: 14px 64px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.wt-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.4);
+}
+
+.wt-btn-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.2);
+}
+
+.wt-btn-success:hover {
+    box-shadow: 0 12px 24px -6px rgba(34, 197, 94, 0.4);
+}

@@ -1,3 +1,7 @@
+/* =========================================================
+   InterviewModal.css (完整版 - 基于极简白底重构)
+   ========================================================= */
+
 :root {
     --primary: #3b82f6;
     --primary-light: #eff6ff;
@@ -26,10 +30,8 @@
 }
 
 .modal {
-    width: 560px;
-    /* 🌟 加宽以容纳更专业的表单 */
+    width: 600px;
     max-height: 90vh;
-    /* 防止屏幕过小 */
     display: flex;
     flex-direction: column;
     background: var(--bg-modal);
@@ -79,42 +81,117 @@
     display: flex;
 }
 
-/* --- 主体布局 (增加滚动支持) --- */
+.close-btn {
+    background: var(--bg-input);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.close-btn:hover {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+/* --- 主体布局 --- */
 .modal-body {
     padding: 24px 32px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 24px;
     overflow-y: auto;
-    /* 内容过多时可滚动 */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
 
 .modal-body::-webkit-scrollbar {
-    width: 6px;
+    display: none;
 }
 
-.modal-body::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 4px;
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
 .form-section.full-width {
     grid-column: span 2;
 }
 
-.section-title {
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-bottom: 12px;
+.section-header-flex {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 8px;
 }
 
-/* --- 目标定位区域 --- */
+/* 🌟 还原极简蓝色竖线条标题 */
+#home-app-root .section-title {
+    font-size: 2rem !important;
+    font-weight: 800 !important;
+    margin-bottom: 1rem !important;
+    color: #111827 !important;
+    white-space: nowrap !important;
+}
+
+.section-title::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.title-icon-gray {
+    color: #94a3b8;
+    stroke-width: 2.5;
+}
+
+/* --- 目标定位与 N刷联动小字 --- */
+.iteration-mini-text {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.step-btn-mini {
+    background: var(--bg-input);
+    border: 1px solid var(--border-light);
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin: 0 4px;
+    color: var(--text-main);
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.step-btn-mini:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+    border-color: var(--primary);
+}
+
+.step-val-mini {
+    font-weight: 700;
+    color: var(--primary);
+    width: 16px;
+    text-align: center;
+}
+
 .position-grid {
     display: flex;
     gap: 12px;
@@ -138,6 +215,7 @@
     font-weight: 600;
     color: var(--text-main);
     transition: var(--transition);
+    outline: none;
 }
 
 .company-select {
@@ -151,8 +229,36 @@
 .position-input:focus {
     background: white;
     border-color: var(--primary);
-    outline: none;
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.history-hint-line {
+    font-size: 12px;
+    color: var(--primary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 4px;
+    padding: 8px 12px;
+    background: var(--primary-light);
+    border-radius: 8px;
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* --- 面试维度胶囊 --- */
@@ -205,7 +311,61 @@
     border: 1px solid var(--border-light);
 }
 
-/* --- 背景材料专区 (JD 输入与 Switch) --- */
+/* --- 面试阵型图片卡片 --- */
+.interview-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.interview-type-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-input);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.interview-type-card:hover {
+    background: white;
+    border-color: var(--border-light);
+}
+
+.interview-type-card.active {
+    background: white;
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
+}
+
+.interview-type-img {
+    height: 48px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 6px;
+    transition: transform 0.2s;
+}
+
+.interview-type-card.active .interview-type-img {
+    transform: scale(1.05);
+}
+
+.interview-type-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: var(--transition);
+}
+
+.interview-type-card.active .interview-type-name {
+    color: var(--primary);
+}
+
+/* --- 背景材料专区 --- */
 .bg-material-box {
     background: #f8fafc;
     border: 1px solid var(--border-light);
@@ -215,13 +375,6 @@
 
 .bg-material-box .section-title {
     margin-bottom: 0;
-}
-
-.section-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
 }
 
 .switch-wrapper {
@@ -287,7 +440,7 @@
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
-/* --- 性格特质池 --- */
+/* --- 🌟 考官特质池 (大类包含小类的彩色药丸) --- */
 .random-refresh-btn {
     background: transparent;
     border: none;
@@ -305,14 +458,32 @@
 
 .random-refresh-btn:hover {
     background: var(--primary-light);
-    transform: rotate(15deg);
+}
+
+.personality-groups-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 4px;
+}
+
+.personality-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.personality-group-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    padding-left: 2px;
 }
 
 .personality-pool-grid {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
-    margin-top: 4px;
 }
 
 .pool-badge {
@@ -379,71 +550,4 @@
 .btn-primary-shine:hover {
     transform: translateY(-2px);
     box-shadow: 0 12px 24px -6px rgba(59, 130, 246, 0.5);
-}
-
-.close-btn {
-    background: var(--bg-input);
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.close-btn:hover {
-    background: #fee2e2;
-    color: #ef4444;
-}
-/* --- 面试形式选择 --- */
-.interview-type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.interview-type-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    padding: 12px;
-    background: var(--bg-input);
-    border: 2px solid transparent;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: var(--transition);
-}
-
-.interview-type-card:hover {
-    background: white;
-    border-color: var(--border-light);
-}
-
-.interview-type-card.active {
-    background: white;
-    border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.12);
-}
-
-.interview-type-img {
-    height: 48px;
-    width: auto;
-    object-fit: contain;
-    border-radius: 6px;
-}
-
-.interview-type-name {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text-muted);
-    transition: var(--transition);
-}
-
-.interview-type-card.active .interview-type-name {
-    color: var(--primary);
 }

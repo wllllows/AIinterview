@@ -6,321 +6,550 @@
     --text-muted: #64748b;
 }
 
-.mb-container {
+#mb-app-root {
     height: calc(100vh - 64px);
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     overflow: hidden;
-    background-color: transparent;
+    position: relative;
+    background: #ffffff;
 }
 
-/* ================= 头部 (列表与详情) ================= */
-.mb-header {
-    padding: 16px 40px;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    flex-shrink: 0;
+/* --- 全局按钮和默认样式重置 --- */
+#mb-app-root button {
+    outline: none;
+    margin: 0;
+    font-family: inherit;
 }
 
-.mb-back-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
+#mb-app-root p {
+    margin: 0;
+}
+
+/* --- 🌟 数据大盘 Banner --- */
+#mb-app-root .mb-summary-banner {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%) !important;
+    border: 1px solid #bae6fd !important;
+    border-radius: 16px !important;
+    padding: 24px 32px !important;
+    margin-bottom: 24px !important;
+}
+
+#mb-app-root .summary-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+
+#mb-app-root .summary-icon {
+    background: white !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#mb-app-root .summary-right {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 32px !important;
+}
+
+#mb-app-root .stat-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+}
+
+#mb-app-root .stat-value {
+    font-size: 28px !important;
+    font-weight: 800 !important;
+    color: var(--text-main) !important;
+    line-height: 1 !important;
+    margin-bottom: 4px !important;
+}
+
+#mb-app-root .stat-value.text-green {
+    color: #10b981 !important;
+}
+
+#mb-app-root .stat-label {
+    font-size: 13px !important;
+    color: var(--text-muted) !important;
+    font-weight: 500 !important;
+}
+
+#mb-app-root .stat-divider {
+    width: 1px !important;
+    height: 40px !important;
+    background: #e2e8f0 !important;
+}
+
+/* --- 🌟 控制面板 (Tabs & Filters) --- */
+#mb-app-root .mb-control-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    background: white !important;
+    padding: 20px 24px !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--border-color) !important;
+    margin-bottom: 24px !important;
+}
+
+#mb-app-root .control-top-row,
+#mb-app-root .control-bottom-row {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+    gap: 16px !important;
+}
+
+#mb-app-root .mb-tabs {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+    background: #f1f5f9 !important;
+    padding: 4px !important;
+    border-radius: 12px !important;
+}
+
+#mb-app-root .mb-tab {
+    background: transparent;
     border: none;
-    cursor: pointer;
-    color: var(--text-muted);
-    transition: color 0.2s;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 8px 16px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
+    cursor: pointer !important;
 }
 
-.mb-back-btn:hover {
-    color: var(--primary-blue);
+#mb-app-root .mb-tab.active {
+    background: white !important;
+    color: var(--primary-blue) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05) !important;
 }
 
-.mb-title {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-main);
+#mb-app-root .mb-count-badge {
+    background: #e2e8f0 !important;
+    font-size: 11px !important;
+    padding: 2px 6px !important;
+    border-radius: 10px !important;
 }
 
-/* ================= 状态1&2：列表与详情共用样式 ================= */
-.mb-list-view,
-.mb-detail-view {
+#mb-app-root .mb-tab.active .mb-count-badge {
+    background: #eff6ff !important;
+    color: var(--primary-blue) !important;
+}
+
+#mb-app-root .mb-search-box {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    position: relative !important;
+    width: 280px !important;
+}
+
+#mb-app-root .search-icon {
+    position: absolute !important;
+    left: 12px !important;
+    color: #94a3b8 !important;
+}
+
+#mb-app-root .mb-search-box input {
+    width: 100% !important;
+    padding: 10px 12px 10px 36px !important;
+    border-radius: 8px !important;
+    border: 1px solid var(--border-color) !important;
+    background: #f8fafc !important;
+    font-size: 13px !important;
+    color: var(--text-main) !important;
+}
+
+#mb-app-root .mb-filters {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+
+#mb-app-root .mb-filter-item {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #f8fafc !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
+}
+
+#mb-app-root .mb-filter-item select {
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    padding-right: 8px !important;
+    color: var(--text-main) !important;
+}
+
+#mb-app-root .clear-filter-btn {
+    background: transparent;
+    border: none;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+    font-size: 13px !important;
+    color: #ef4444 !important;
+    cursor: pointer !important;
+    padding: 6px 12px !important;
+    font-weight: 500 !important;
+}
+
+/* --- 🌟 列表与卡片 --- */
+#mb-app-root .mb-list-view,
+#mb-app-root .mb-detail-view {
     flex: 1;
     overflow-y: auto;
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
-    padding: 20px 20px 60px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
+    padding: 20px;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 24px !important;
     scrollbar-width: none;
 }
 
-.mb-list-view::-webkit-scrollbar,
-.mb-detail-view::-webkit-scrollbar {
-    display: none;
+#mb-app-root .mb-card,
+#mb-app-root .mb-explanation-box {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    padding: 24px !important;
 }
 
-.mb-card,
-.mb-explanation-box {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 24px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+#mb-app-root .mb-card-header-meta {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+    border-bottom: 1px dashed #e2e8f0 !important;
+    padding-bottom: 12px !important;
 }
 
-.mb-tag {
-    display: inline-block;
-    padding: 4px 8px;
-    background: #f1f5f9;
-    color: #475569;
-    font-size: 12px;
-    font-weight: 600;
-    border-radius: 6px;
-    margin-bottom: 12px;
+#mb-app-root .meta-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
 
-.mb-tag.red {
-    background: #fef2f2;
-    color: #ef4444;
-}
-
-.mb-card-q p,
-.mb-card-a p {
-    font-size: 15px;
-    line-height: 1.6;
-    margin: 0 0 20px 0;
-}
-
-.wrong-text {
-    color: #ef4444;
-    text-decoration: line-through;
-    opacity: 0.8;
-}
-
-.mb-card-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 16px;
-    border-top: 1px solid var(--border-color);
-    padding-top: 20px;
-}
-
-.mb-btn-outline,
-.mb-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 20px;
-    border-radius: 8px;
+#mb-app-root .meta-company {
+    font-weight: 800;
     font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.mb-btn-outline {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    color: var(--text-muted);
-}
-
-.mb-btn-outline:hover {
-    background: #f8fafc;
     color: var(--text-main);
 }
 
-.mb-btn-outline.blue {
-    border-color: #bae6fd;
+#mb-app-root .meta-position {
+    font-size: 12px;
+    color: var(--text-muted);
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+#mb-app-root .meta-right {
+    font-size: 12px;
+    color: #94a3b8;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+#mb-app-root .mb-card-tags {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    margin-bottom: 16px !important;
+}
+
+#mb-app-root .meta-tag {
+    font-size: 12px;
     color: var(--primary-blue);
-    background: #f0f9ff;
+    background: #eff6ff;
+    padding: 2px 8px;
+    border-radius: 4px;
 }
 
-.mb-btn-outline.blue:hover {
-    border-color: var(--primary-blue);
+#mb-app-root .mb-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    padding: 4px 8px !important;
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    border-radius: 6px !important;
+    margin-bottom: 12px !important;
+    line-height: 1 !important;
 }
 
-.mb-btn-primary {
-    background: var(--text-main);
-    border: 1px solid var(--text-main);
-    color: #ffffff;
+#mb-app-root .mb-tag.red {
+    background: #fef2f2 !important;
+    color: #ef4444 !important;
 }
 
-.mb-btn-primary:hover {
-    background: #000000;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+#mb-app-root .mb-card-q p,
+#mb-app-root .mb-card-a p,
+#mb-app-root .mb-side-q p,
+#mb-app-root .mb-side-a p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0 0 16px 0;
+    color: var(--text-main);
 }
 
-.explanation-section {
+#mb-app-root .wrong-text {
+    color: #ef4444;
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+#mb-app-root .blind-test-box {
+    position: relative;
+    cursor: pointer;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fafafa;
+    padding: 12px;
+}
+
+#mb-app-root .blind-test-box:not(.revealed) .wrong-text {
+    filter: blur(6px);
+    opacity: 0.2;
+}
+
+#mb-app-root .blind-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--text-muted) !important;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(2px);
+}
+
+#mb-app-root .mb-card-actions {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 12px !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding-top: 20px !important;
+}
+
+#mb-app-root .mb-btn-outline,
+#mb-app-root .mb-btn-primary {
+    background: transparent;
+    border: none;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+}
+
+#mb-app-root .mb-btn-outline {
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+#mb-app-root .mb-btn-outline.blue {
+    border-color: var(--primary-blue) !important;
+    color: var(--primary-blue) !important;
+    background: #eff6ff !important;
+}
+
+#mb-app-root .mb-btn-outline.red {
+    color: #ef4444 !important;
+    border-color: #fca5a5 !important;
+    background: #fef2f2 !important;
+}
+
+#mb-app-root .mb-btn-primary {
+    background: var(--text-main) !important;
+    color: white !important;
+    border: 1px solid var(--text-main) !important;
+}
+
+/* --- 🌟 解析与侧边栏 --- */
+#mb-app-root .explanation-section {
     margin-bottom: 24px;
 }
 
-.explanation-section h4 {
+#mb-app-root .explanation-section h4 {
     font-size: 15px;
     margin: 0 0 8px 0;
 }
 
-.green-text {
+#mb-app-root .green-text {
     color: #059669;
 }
 
-.explanation-section p {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #334155;
-    margin: 0;
-}
-
-/* ================= 状态 3: AI 分栏布局  ================= */
-.mb-chat-layout {
+#mb-app-root .mb-chat-layout {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
+    display: flex !important;
+    flex-direction: row !important;
+    background: white;
     z-index: 9999;
-    display: flex;
-    background: #ffffff;
 }
 
-/* == 左侧侧边栏布局 == */
-.mb-chat-sidebar {
+#mb-app-root .mb-chat-sidebar {
     width: 340px;
     border-right: 1px solid var(--border-color);
-    display: flex;
-    flex-direction: column;
     background: #f8fafc;
+    display: flex !important;
+    flex-direction: column !important;
 }
 
-.mb-sidebar-header {
-    padding: 24px 24px 8px 24px;
+#mb-app-root .mb-sidebar-header {
+    padding: 24px;
     flex-shrink: 0;
 }
 
-.mb-minimal-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    padding: 8px 16px 8px 10px;
-    border-radius: 100px;
-    color: var(--text-muted);
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
-}
-
-.mb-minimal-back:hover {
-    color: var(--primary-blue);
-    border-color: #bfdbfe;
-    background-color: #f0f9ff;
-    transform: translateX(-4px);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-}
-
-.mb-sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    min-height: 0;
-    padding: 12px 24px 32px 24px;
-}
-
-.mb-divider {
+#mb-app-root .mb-minimal-back {
+    background: transparent;
     border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 24px 0;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: white !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 8px 16px !important;
+    border-radius: 20px !important;
+    cursor: pointer !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--text-muted) !important;
 }
 
-/* == 右侧主聊天区 == */
-.mb-chat-main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    background-color: #ffffff;
-}
-
-.mb-chat-history {
+#mb-app-root .mb-sidebar-content {
     flex: 1;
     overflow-y: auto;
-    min-height: 0;
+    padding: 24px;
+}
+
+/* --- 🌟 聊天主区与空状态 --- */
+#mb-app-root .mb-chat-main {
+    flex: 1;
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0;
+}
+
+#mb-app-root .mb-chat-history {
+    flex: 1;
+    overflow-y: auto;
     scrollbar-width: none;
 }
 
-.mb-chat-history::-webkit-scrollbar {
-    display: none;
-}
-
-.mb-chat-center {
+#mb-app-root .mb-chat-center {
     max-width: 800px;
     margin: 0 auto;
-    padding: 40px 20px 40px 20px;
-    display: flex;
-    flex-direction: column;
+    padding: 40px 20px;
 }
 
-/* 空状态 */
-.mb-empty-state {
-    margin: auto;
+#mb-app-root .mb-empty-state {
     text-align: center;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 60px 0;
+    margin: auto;
 }
 
-.mb-empty-state .empty-icon {
+#mb-app-root .empty-icon {
     color: #93c5fd;
     margin-bottom: 20px;
-    animation: float 3s ease-in-out infinite;
 }
 
-.mb-empty-state h2 {
+#mb-app-root .mb-empty-state h2 {
     font-size: 32px;
     color: #cbd5e1;
     margin: 0 0 12px 0;
-    letter-spacing: 2px;
 }
 
-.mb-empty-state p {
-    color: #94a3b8;
-    font-size: 15px;
+#mb-app-root .mb-empty-state h3 {
+    font-size: 20px;
+    color: var(--text-main);
+    margin: 0 0 8px 0;
 }
 
-/* 气泡样式 */
-.mb-chat-list {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
-    width: 100%;
+#mb-app-root .mb-chat-list {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
 }
 
-.mb-bubble-wrap {
-    display: flex;
-    gap: 12px;
+#mb-app-root .mb-bubble-wrap {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
 }
 
-.mb-bubble-wrap.user {
-    justify-content: flex-end;
+#mb-app-root .mb-bubble-wrap.user {
+    justify-content: flex-end !important;
 }
 
-.mb-avatar {
+#mb-app-root .mb-avatar {
     width: 32px;
     height: 32px;
     border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background: #eff6ff;
-    border: 1px solid #bfdbfe;
     color: var(--primary-blue);
-    flex-shrink: 0;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-.mb-bubble {
+#mb-app-root .mb-bubble {
     max-width: 75%;
     padding: 14px 18px;
     font-size: 15px;
@@ -328,110 +557,131 @@
     border-radius: 12px;
 }
 
-.user .mb-bubble {
+#mb-app-root .user .mb-bubble {
     background: #f1f5f9;
     color: var(--text-main);
-    border-bottom-right-radius: 4px;
 }
 
-.ai .mb-bubble {
-    background: #ffffff;
+#mb-app-root .ai .mb-bubble {
+    background: white;
     border: 1px solid var(--border-color);
-    border-bottom-left-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    color: var(--text-main);
 }
 
-/* 底部输入框 */
-.mb-chat-input-area {
-    flex-shrink: 0;
-    width: 100%;
-    background-color: #ffffff;
+/* --- 🌟 底部聊天输入 & 快捷胶囊 --- */
+#mb-app-root .mb-chat-input-area {
+    padding: 16px 20px 24px;
     border-top: 1px solid var(--border-color);
-    padding: 16px 20px 24px 20px;
-    z-index: 10;
+    background: white;
+    flex-shrink: 0;
 }
 
-.mb-input-box {
+#mb-app-root .mb-quick-prompts {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 10px !important;
+    margin-bottom: 12px !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+#mb-app-root .mb-quick-prompts button {
+    background: transparent;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #f8fafc !important;
+    border: 1px solid var(--border-color) !important;
+    padding: 8px 16px !important;
+    border-radius: 100px !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    color: var(--text-muted) !important;
+    white-space: nowrap !important;
+}
+
+#mb-app-root .mb-quick-prompts button:hover {
+    background: #eff6ff !important;
+    color: var(--primary-blue) !important;
+    border-color: #bfdbfe !important;
+}
+
+#mb-app-root .mb-input-box {
     max-width: 800px;
     margin: 0 auto;
     position: relative;
-    background: #ffffff;
+    background: white;
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    display: flex;
+    display: flex !important;
+    flex-direction: row !important;
+    padding: 4px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
-    transition: all 0.3s ease;
 }
 
-.mb-input-box:focus-within {
-    border-color: var(--primary-blue);
-    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
-}
-
-.mb-input-box textarea {
+#mb-app-root .mb-input-box textarea {
     flex: 1;
     border: none;
     outline: none;
     resize: none;
-    padding: 16px 60px 16px 20px;
+    padding: 14px 50px 14px 16px;
     font-size: 15px;
-    line-height: 1.5;
-    font-family: inherit;
     background: transparent;
-    max-height: 200px;
+    color: var(--text-main);
 }
 
-.mb-send-btn {
+#mb-app-root .mb-send-btn {
+    background: transparent;
+    border: none;
     position: absolute;
-    bottom: 10px;
-    right: 12px;
+    right: 8px;
+    bottom: 8px;
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    border: none;
-    background: #f1f5f9;
-    color: #94a3b8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
+    background: #f1f5f9 !important;
+    color: #cbd5e1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
-.mb-send-btn.active {
-    background: #1e293b;
-    color: #ffffff;
-    cursor: pointer;
+#mb-app-root .mb-send-btn.active {
+    background: var(--text-main) !important;
+    color: white !important;
+    cursor: pointer !important;
 }
 
-.mb-send-btn.active:hover {
-    background: var(--primary-blue);
-    transform: translateY(-2px);
+/* 头部 Header */
+#mb-app-root .mb-header {
+    padding: 16px 40px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    flex-shrink: 0;
+    background: white;
 }
 
-.fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-
-    0%,
-    100% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
+/* 全局 Toast */
+#mb-app-root .mb-toast {
+    position: fixed;
+    top: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #10b981;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 100px;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+    z-index: 9999;
 }

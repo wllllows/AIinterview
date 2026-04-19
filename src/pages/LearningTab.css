@@ -1,0 +1,186 @@
+/* =========================================================
+   LearningTab.css (统一白底单栏、精细化网格排版)
+   ========================================================= */
+
+/* --- 1. 极简头部横幅 (完美还原图片风格) --- */
+.banner-sleek-clean {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 28px 32px;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02);
+}
+
+.banner-sleek-clean h2 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.01em;
+}
+
+.banner-sleek-clean p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* --- 2. 栏目标题与网格系统 --- */
+.learning-sections-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    /* 栏目与栏目之间留出极具呼吸感的空间 */
+}
+
+.resource-section {
+    display: block;
+}
+
+.section-header-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #334155;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 核心：标准 3 列网格 */
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* --- 3. 高级感资源卡片 (统一质感、丰富点缀) --- */
+.resource-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 24px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.01);
+}
+
+.resource-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.04);
+    transform: translateY(-2px);
+}
+
+/* 卡片顶部：图标与 Meta 标签对齐 */
+.res-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* 左侧微底色图标 */
+.res-icon-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 丰富维度的图标色彩配置 */
+.res-icon-box.practice {
+    background: #eff6ff;
+    color: #3b82f6;
+}
+
+.res-icon-box.video {
+    background: #fef2f2;
+    color: #ef4444;
+}
+
+.res-icon-box.article {
+    background: #ecfdf5;
+    color: #10b981;
+}
+
+/* 右侧 Meta 点缀 (12题、进阶、必读等) */
+.res-meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+    padding: 2px 0;
+}
+
+/* 卡片标题 */
+.res-title {
+    margin: 0 0 24px 0;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+    color: #0f172a;
+}
+
+/* 卡片底部原因说明 */
+.res-footer {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.res-reason {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+/* --- 4. 辅助颜色类 (用于栏目标题的图标点缀) --- */
+.text-blue-500 {
+    color: #3b82f6;
+}
+
+.text-green-500 {
+    color: #10b981;
+}
+
+.text-purple-500 {
+    color: #8b5cf6;
+}
+
+.text-orange-500 {
+    color: #f59e0b;
+}
+
+.text-gray-400 {
+    color: #9ca3af;
+}
+
+/* --- 5. 响应式适配 --- */
+@media (max-width: 1024px) {
+    .resource-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-sleek-clean {
+        padding: 20px;
+    }
+
+    .resource-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .learning-sections-wrapper {
+        gap: 32px;
+    }
+}

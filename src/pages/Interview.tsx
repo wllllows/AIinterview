@@ -10,12 +10,13 @@ import {
     Sparkles,
     User,
     Clock,
-    PhoneOff, 
+    PhoneOff,
     Wifi,
     ClipboardCheck,
     ChevronDown
 } from 'lucide-react';
 import './Interview.css';
+
 const mockRecords = [
     { id: 1, type: 'system', content: '14:00 面试正式开始，正在开启实时语音转写...' },
     { id: 2, type: 'ai', content: '你好，我是本次的 AI 面试官。很高兴认识你。我看过你的简历，你在上一家公司主导了后台管理系统的重构。为了让我们更好地开始，能不能用 2-3 分钟简单做一个自我介绍，并着重分享一个你觉得最有挑战的前端项目？' },
@@ -117,8 +118,10 @@ export default function Interview() {
             navigate('/interview/summary');
         }
     };
+
     useEffect(() => {
-        document.body.style.backgroundColor = '#020617';
+        // 确保页面底层背景为纯黑，防止信箱模式漏出其他颜色
+        document.body.style.backgroundColor = '#000';
         return () => {
             document.body.style.backgroundColor = '#f4f6f9';
         };
@@ -151,7 +154,8 @@ export default function Interview() {
                             title="LiveAvatar AI Interviewer"
                             referrerPolicy="no-referrer-when-downgrade"
                             loading="eager"
-                            style={{ aspectRatio: '16/9', width: '100%', height: '100%', border: 'none', borderRadius: '12px' }}
+                            // 🌟 修复点：移除 aspectRatio: '16/9'，让视频完全铺满容器高度
+                            style={{ width: '100%', height: '100%', border: 'none', objectFit: 'cover' }}
                         />
                     ) : (
                         <div className="video-placeholder ai-center">
