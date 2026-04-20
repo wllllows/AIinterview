@@ -559,77 +559,113 @@ export default function ResumeForm() {
                                         <Sparkles size={16} />
                                         <span>{companyName} · {positionName} 知识图谱</span>
                                     </div>
-                                    <div className="knowledge-graph-complex">
-                                        <div className="knowledge-theme-badge">
+                                    <div className="neo4j-graph-container">
+                                        {/* SVG 连线层 */}
+                                        <svg className="neo4j-edge-layer" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <defs>
+                                                <linearGradient id="edge-blue" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.9" />
+                                                    <stop offset="100%" stopColor="#3b82f6" stopOpacity="0.5" />
+                                                </linearGradient>
+                                                <linearGradient id="edge-green" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.9" />
+                                                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.5" />
+                                                </linearGradient>
+                                                <linearGradient id="edge-orange" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.9" />
+                                                    <stop offset="100%" stopColor="#f59e0b" stopOpacity="0.5" />
+                                                </linearGradient>
+                                                <linearGradient id="edge-red" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#ef4444" stopOpacity="0.9" />
+                                                    <stop offset="100%" stopColor="#ef4444" stopOpacity="0.5" />
+                                                </linearGradient>
+                                                <linearGradient id="edge-purple" x1="0" y1="0" x2="1" y2="0">
+                                                    <stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.9" />
+                                                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity="0.5" />
+                                                </linearGradient>
+                                            </defs>
+                                            <path d="M 50 50 Q 35 25 19 16" className="neo4j-edge-path" stroke="url(#edge-blue)" />
+                                            <path d="M 50 50 Q 65 25 81 16" className="neo4j-edge-path" stroke="url(#edge-green)" />
+                                            <path d="M 50 50 Q 35 55 19 53" className="neo4j-edge-path" stroke="url(#edge-orange)" />
+                                            <path d="M 50 50 Q 65 55 81 53" className="neo4j-edge-path" stroke="url(#edge-red)" />
+                                            <path d="M 50 50 Q 50 72 50 89" className="neo4j-edge-path" stroke="url(#edge-purple)" />
+                                        </svg>
+
+                                        {/* 中心节点 */}
+                                        <div className="neo4j-node center">
                                             <div className="theme-main">{companyName}</div>
                                             <div className="theme-sub">{positionName}</div>
                                         </div>
-                                        <div className="knowledge-grid">
-                                            <div className="knowledge-node-card" style={{ '--node-color': '#3b82f6' } as any}>
-                                                <div className="node-header">
-                                                    <div className="node-icon" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><Cpu size={16} /></div>
-                                                    <span className="node-title">技术栈</span>
-                                                </div>
-                                                <ul className="node-branches">
-                                                    <li><strong>Java 基础：</strong>集合源码、并发编程、JVM 内存模型与 GC 算法</li>
-                                                    <li><strong>Spring 生态：</strong>Spring Boot 自动配置、Spring Cloud 微服务、MyBatis-Plus</li>
-                                                    <li><strong>中间件：</strong>Redis 缓存策略、MySQL 索引优化、Kafka 消息队列</li>
-                                                    <li><strong>云原生：</strong>Docker 容器化、Kubernetes 编排与服务网格</li>
-                                                    <li><strong>分布式理论：</strong>CAP、分布式事务（Seata）、分库分表（ShardingSphere）</li>
-                                                </ul>
+
+                                        {/* 卫星节点 */}
+                                        <div className="neo4j-node pos-tl" style={{ '--node-color': '#3b82f6' } as any}>
+                                            <div className="node-header">
+                                                <div className="node-icon"><Cpu size={16} /></div>
+                                                <span className="node-title">技术栈</span>
                                             </div>
-                                            <div className="knowledge-node-card" style={{ '--node-color': '#10b981' } as any}>
-                                                <div className="node-header">
-                                                    <div className="node-icon" style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981' }}><FileText size={16} /></div>
-                                                    <span className="node-title">笔试特点</span>
-                                                </div>
-                                                <ul className="node-branches">
-                                                    <li>机考 <strong>3 道编程题</strong>，难度中等偏上，侧重边界处理</li>
-                                                    <li>题型覆盖：字符串处理、DFS/BFS、动态规划与贪心</li>
-                                                    <li>选择题占比约 30%，覆盖计网 / 操作系统 / 数据库三科</li>
-                                                    <li>时间紧张，平均每题仅 25 分钟，需提前熟悉牛客网环境</li>
-                                                    <li>通过率与代码鲁棒性（空指针、大数组）强相关</li>
-                                                </ul>
+                                            <ul className="node-branches">
+                                                <li><strong>Java 基础：</strong>集合源码、并发编程、JVM 内存模型与 GC 算法</li>
+                                                <li><strong>Spring 生态：</strong>Spring Boot 自动配置、Spring Cloud 微服务、MyBatis-Plus</li>
+                                                <li><strong>中间件：</strong>Redis 缓存策略、MySQL 索引优化、Kafka 消息队列</li>
+                                                <li><strong>云原生：</strong>Docker 容器化、Kubernetes 编排与服务网格</li>
+                                                <li><strong>分布式理论：</strong>CAP、分布式事务（Seata）、分库分表（ShardingSphere）</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="neo4j-node pos-tr" style={{ '--node-color': '#10b981' } as any}>
+                                            <div className="node-header">
+                                                <div className="node-icon"><FileText size={16} /></div>
+                                                <span className="node-title">笔试特点</span>
                                             </div>
-                                            <div className="knowledge-node-card" style={{ '--node-color': '#f59e0b' } as any}>
-                                                <div className="node-header">
-                                                    <div className="node-icon" style={{ background: 'rgba(245,158,11,0.1)', color: '#f59e0b' }}><Users size={16} /></div>
-                                                    <span className="node-title">考官风格</span>
-                                                </div>
-                                                <ul className="node-branches">
-                                                    <li>整体风格<strong>严谨务实</strong>，不太喜欢"花架子"和空泛概念</li>
-                                                    <li>会对项目细节<strong>连环追问</strong>，直到探测到你的技术边界为止</li>
-                                                    <li>极度<strong>注重结果量化</strong>，要求用具体数据说明项目价值</li>
-                                                    <li>对未实践过的技术<strong>容忍度低</strong>，坦诚说明比强行套概念更安全</li>
-                                                    <li>手撕代码环节态度严肃，但会在你卡住时给予适度提示</li>
-                                                </ul>
+                                            <ul className="node-branches">
+                                                <li>机考 <strong>3 道编程题</strong>，难度中等偏上，侧重边界处理</li>
+                                                <li>题型覆盖：字符串处理、DFS/BFS、动态规划与贪心</li>
+                                                <li>选择题占比约 30%，覆盖计网 / 操作系统 / 数据库三科</li>
+                                                <li>时间紧张，平均每题仅 25 分钟，需提前熟悉牛客网环境</li>
+                                                <li>通过率与代码鲁棒性（空指针、大数组）强相关</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="neo4j-node pos-ml" style={{ '--node-color': '#f59e0b' } as any}>
+                                            <div className="node-header">
+                                                <div className="node-icon"><Users size={16} /></div>
+                                                <span className="node-title">考官风格</span>
                                             </div>
-                                            <div className="knowledge-node-card" style={{ '--node-color': '#ef4444' } as any}>
-                                                <div className="node-header">
-                                                    <div className="node-icon" style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444' }}><Target size={16} /></div>
-                                                    <span className="node-title">面试重点</span>
-                                                </div>
-                                                <ul className="node-branches">
-                                                    <li><strong>JVM 调优：</strong>GC 算法选择、线上 OOM 排查、Arthas 实战</li>
-                                                    <li><strong>高并发设计：</strong>线程池参数调优、缓存击穿/穿透/雪崩防护</li>
-                                                    <li><strong>项目架构演进：</strong>从单体到微服务的拆分理由与踩坑复盘</li>
-                                                    <li><strong>手撕代码必考：</strong>LRU、生产者消费者、TOP K 等问题</li>
-                                                    <li><strong>微服务实践：</strong>分布式锁、限流降级、注册中心选型</li>
-                                                </ul>
+                                            <ul className="node-branches">
+                                                <li>整体风格<strong>严谨务实</strong>，不太喜欢"花架子"和空泛概念</li>
+                                                <li>会对项目细节<strong>连环追问</strong>，直到探测到你的技术边界为止</li>
+                                                <li>极度<strong>注重结果量化</strong>，要求用具体数据说明项目价值</li>
+                                                <li>对未实践过的技术<strong>容忍度低</strong>，坦诚说明比强行套概念更安全</li>
+                                                <li>手撕代码环节态度严肃，但会在你卡住时给予适度提示</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="neo4j-node pos-mr" style={{ '--node-color': '#ef4444' } as any}>
+                                            <div className="node-header">
+                                                <div className="node-icon"><Target size={16} /></div>
+                                                <span className="node-title">面试重点</span>
                                             </div>
-                                            <div className="knowledge-node-card full-width" style={{ '--node-color': '#8b5cf6' } as any}>
-                                                <div className="node-header">
-                                                    <div className="node-icon" style={{ background: 'rgba(139,92,246,0.1)', color: '#8b5cf6' }}><BookOpen size={16} /></div>
-                                                    <span className="node-title">备考方向</span>
-                                                </div>
-                                                <ul className="node-branches inline-five">
-                                                    <li>夯实 Java 并发与集合源码细节</li>
-                                                    <li>准备 2 个有高复杂度、可量化的项目</li>
-                                                    <li>刷透华为机考高频题库（近 3 年真题）</li>
-                                                    <li>熟悉华为"狼性文化"与 IPD 研发流程</li>
-                                                    <li>模拟面试中训练结构化表达能力</li>
-                                                </ul>
+                                            <ul className="node-branches">
+                                                <li><strong>JVM 调优：</strong>GC 算法选择、线上 OOM 排查、Arthas 实战</li>
+                                                <li><strong>高并发设计：</strong>线程池参数调优、缓存击穿/穿透/雪崩防护</li>
+                                                <li><strong>项目架构演进：</strong>从单体到微服务的拆分理由与踩坑复盘</li>
+                                                <li><strong>手撕代码必考：</strong>LRU、生产者消费者、TOP K 等问题</li>
+                                                <li><strong>微服务实践：</strong>分布式锁、限流降级、注册中心选型</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="neo4j-node pos-bottom" style={{ '--node-color': '#8b5cf6' } as any}>
+                                            <div className="node-header">
+                                                <div className="node-icon"><BookOpen size={16} /></div>
+                                                <span className="node-title">备考方向</span>
                                             </div>
+                                            <ul className="node-branches inline-five">
+                                                <li>夯实 Java 并发与集合源码细节</li>
+                                                <li>准备 2 个有高复杂度、可量化的项目</li>
+                                                <li>刷透华为机考高频题库（近 3 年真题）</li>
+                                                <li>熟悉华为"狼性文化"与 IPD 研发流程</li>
+                                                <li>模拟面试中训练结构化表达能力</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -644,7 +680,7 @@ export default function ResumeForm() {
                                         </div>
                                     </div>
                                     <div className="report-body">
-                                        <pre className="typewriter-text">{typedText}<span className={`cursor ${showCursor ? 'visible' : ''}`}>|</span></pre>
+                                        <pre className="typewriter-text">{aiOutputText}</pre>
                                     </div>
                                 </div>
                             </div>
