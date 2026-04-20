@@ -12,7 +12,7 @@ export default function InterviewModal({ open, onClose }: Props) {
     const navigate = useNavigate()
 
     const companyList = [
-        '通用科技公司', '字节跳动', '腾讯', '阿里巴巴', '美团',
+        '华为', '字节跳动', '腾讯', '阿里巴巴', '美团',
     ];
 
     // 🌟 特质分组：大类下包含小类 (彩色小药丸)
