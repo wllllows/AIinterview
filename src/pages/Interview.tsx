@@ -19,16 +19,16 @@ import './Interview.css';
 
 const mockRecords = [
     { id: 1, type: 'system', content: '14:00 面试正式开始，正在开启实时语音转写...' },
-    { id: 2, type: 'ai', content: '你好，我是本次的 AI 面试官。很高兴认识你。我看过你的简历，你在上一家公司主导了后台管理系统的重构。为了让我们更好地开始，能不能用 2-3 分钟简单做一个自我介绍，并着重分享一个你觉得最有挑战的前端项目？' },
-    { id: 3, type: 'user', content: '面试官你好。我叫张三，有三年的前端开发经验，技术栈主要是 React 和 TypeScript。在上一家公司，我印象最深的项目是把一个老旧的 Vue2 巨石应用迁移到了 React + Vite 的微前端架构。当时最大的挑战是新老系统需要并行跑大半年，期间还有状态共享和跨应用路由跳转的问题。' },
+    { id: 2, type: 'ai', content: '聊Spring。你简历写"精通Spring Boot"，这个"精通"怎么定义？' },
+    { id: 3, type: 'user', content: '可能用词有点过，是熟练应用级别。理解自动配置原理，能自定义starter' },
     {
         id: 301,
         type: 'score_trigger',
         score: '8.5',
-        content: '表述清晰，能够快速切入核心项目难点（微前端重构）。技术栈（React+TS+Vite）匹配度高。'
+        content: '表述清晰，能够快速切入核心。对主要区别阐述到位，体现了扎实的知识。'
     },
-    { id: 4, type: 'ai', content: '微前端架构确实是一个很有挑战的方向。你刚刚提到新老系统并行期间的“状态共享”问题，能具体说说你们当时是怎么解决 Vue 应用和 React 应用之间的全局状态同步的吗？有没有遇到什么坑？' },
-    { id: 5, type: 'user', content: '嗯，当时我们评估了几个方案。一开始想用 localStorage，但因为涉及到频繁的实时状态更新，性能不太理想。后来我们引入了 qiankun 框架，利用它的 initGlobalState API 在主应用维护了一套全局状态，然后在子应用通过 onGlobalStateChange 监听。遇到的坑主要是内存泄漏，子应用卸载时如果没有手动注销监听器会导致主应用卡顿。后来我们在 unmount 阶段封装了一个高阶组件统一清理。' },
+    { id: 4, type: 'ai', content: '那我问个简单的。Spring Bean默认单例，多线程安全吗？' },
+    { id: 5, type: 'user', content: '不安全。单例是容器级单例，如果Bean有成员变量状态，并发修改会出问题。' },
     {
         id: 501,
         type: 'score_trigger',
@@ -36,15 +36,15 @@ const mockRecords = [
         content: '非常好。不仅给出了解决方案（qiankun全局状态），还主动谈到了遇到的坑（内存泄漏）和最终解法（高阶组件清理），体现了深度的工程实践经验。'
     },
     { id: 6, type: 'system', content: '⚠️ 网络轻微波动，已自动恢复并同步音频。' },
-    { id: 7, type: 'ai', content: '非常清晰的解决思路，尤其是对生命周期清理的关注，这在微前端中确实很关键。那我们聊聊性能优化吧。假设现在有一个长列表页面，数据量有上万条，用户滚动时非常卡顿。但在不使用第三方库的前提下，你会如何设计一个虚拟列表（Virtual List）来解决这个问题？请描述一下核心思路。' },
-    { id: 8, type: 'user', content: '自己实现的话，核心思路就是“只渲染可视区域内的 DOM 节点”。首先，用一个外层容器设置 overflow: auto 并监听 onScroll 事件。然后根据每行固定的高度，计算出总高度撑开滚动条。接着，在滚动事件中拿到当前的 scrollTop，算出当前可视区域的起始索引（startIndex）和结束索引（endIndex）。最后，利用绝对定位把真正渲染出来的这几十个 DOM 节点推到正确的位置上。' },
+    { id: 7, type: 'ai', content: '项目用Nacos做注册中心，如果Nacos挂了，服务还能调用吗？' },
+    { id: 8, type: 'user', content: '能，客户端有本地缓存。Nacos挂了后，Consumer用本地缓存的实例列表继续调用，只是不能感知新服务上线或下线。但缓存会过期，长时间挂的话需要兜底方案，比如静态IP列表或降级。' },
     {
         id: 801,
         type: 'score_trigger',
         score: '8.0',
         content: '核心思路正确（只渲染可视区、计算索引、绝对定位）。但忽略了“不定高度”这一常见复杂场景，回答略显模板化。'
     },
-    { id: 9, type: 'ai', content: '回答得很好，基本抓住了虚拟滚动的核心原理。如果每行的高度是不固定的呢？你会怎么优化这个计算逻辑？' },
+    { id: 9, type: 'ai', content: '你们怎么保证缓存一致性？Nacos恢复后数据乱了怎么办？' },
 ];
 
 export default function Interview() {

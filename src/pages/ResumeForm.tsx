@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Trash2, Link as LinkIcon, Search, BrainCircuit, Sparkles, Globe, FileText, Cpu, Building2, Target, BookOpen, Users } from 'lucide-react';
 import './ResumeForm.css';
@@ -12,21 +12,43 @@ const Section = ({ title, children }: { title: string; children: React.ReactNode
 );
 
 // 通用的输入框组件：包含标签、必填标识和补充说明
-const Field = ({ label, placeholder, type = "text", required = true, tip = "", value, onChange }: any) => (
+const Field = ({ label, placeholder, type = "text", required = true, tip = "", value, onChange, options }: any) => (
     <div className="field-group">
         <label className="field-label">
             {label}{required && <span className="required">*</span>}
         </label>
         {type === "select" ? (
-            <select className="field-input display-only" value={value} onChange={onChange}>
+            <select className="field-input display-only" value={value || ""} onChange={onChange}>
                 <option value="">{placeholder}</option>
+                {options?.map((opt: string) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                ))}
             </select>
         ) : (
-            <input type="text" className="field-input display-only" placeholder={placeholder} value={value} onChange={onChange} />
+            <input type="text" className="field-input display-only" placeholder={placeholder} value={value || ""} onChange={onChange} />
         )}
         {tip && <p className="field-tip">{tip}</p>}
     </div>
 );
+
+// 文件上传按钮组件
+const FileUploadButton = ({ accept = "*", onChange, children }: { accept?: string; onChange: (file: File | null) => void; children: React.ReactNode }) => {
+    const inputRef = useRef<HTMLInputElement>(null);
+    return (
+        <>
+            <input
+                ref={inputRef}
+                type="file"
+                accept={accept}
+                style={{ display: 'none' }}
+                onChange={(e) => onChange(e.target.files?.[0] || null)}
+            />
+            <div onClick={() => inputRef.current?.click()} style={{ display: 'inline-block' }}>
+                {children}
+            </div>
+        </>
+    );
+};
 
 // 模拟搜索数据源
 const searchSources = [
@@ -56,6 +78,10 @@ const aiOutputText = `基于对华为前端开发工程师岗位的全网信息�
 3. 刷透华为近年高频算法题（数组去重、二叉树遍历、LRU、扁平化数组等）；
 4. 了解华为"狼性文化"与 IPD 流程，面试中适当体现你的抗压能力与结果导向思维。`;
 
+// 生成唯一ID
+let uidCounter = 0;
+const uid = () => `item_${Date.now()}_${uidCounter++}`;
+
 export default function ResumeForm() {
     const navigate = useNavigate();
     const [targetCompany, setTargetCompany] = useState('');
@@ -64,7 +90,61 @@ export default function ResumeForm() {
     const [searchProgress, setSearchProgress] = useState(0);
     const [typedText, setTypedText] = useState('');
     const [showCursor, setShowCursor] = useState(true);
-    const typewriterRef = useRef<NodeJS.Timeout | null>(null);
+    const typewriterRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    // 1. 简历上传
+    const [resumeFileName, setResumeFileName] = useState('');
+
+    // 2. 个人信息
+    const [photoFileName, setPhotoFileName] = useState('');
+    const [name, setName] = useState('');
+    const [gender, setGender] = useState('男');
+    const [country, setCountry] = useState('');
+    const [idType, setIdType] = useState('身份证');
+    const [idNumber, setIdNumber] = useState('');
+    const [phone, setPhone] = useState('');
+    const [email, setEmail] = useState('');
+
+    // 3. 教育经历
+    const [educations, setEducations] = useState([
+        { id: uid(), degree: '', school: '', location: '', startDate: '', endDate: '', department: '', major: '' }
+    ]);
+
+    // 4. 实习经历
+    const [noInternship, setNoInternship] = useState(false);
+    const [internships, setInternships] = useState([
+        { id: uid(), company: '', position: '', description: '' }
+    ]);
+
+    // 5. 项目经历
+    const [noProject, setNoProject] = useState(false);
+    const [projects, setProjects] = useState([
+        { id: uid(), name: '', role: '', description: '' }
+    ]);
+
+    // 6. 获奖信息
+    const [noAward, setNoAward] = useState(false);
+    const [awards, setAwards] = useState([
+        { id: uid(), type: '', name: '', time: '' }
+    ]);
+
+    // 7. 技能信息
+    const [examType, setExamType] = useState('');
+    const [examScore, setExamScore] = useState('');
+    const [languages, setLanguages] = useState('');
+    const [aiSkills, setAiSkills] = useState('');
+
+    // 8. 作品或个人主页
+    const [portfolioFileName, setPortfolioFileName] = useState('');
+    const [portfolioLinks, setPortfolioLinks] = useState([{ id: uid(), url: '' }]);
+
+    // 9. 资料证明人
+    const [refereeName, setRefereeName] = useState('');
+    const [refereeRole, setRefereeRole] = useState('');
+    const [refereePhone, setRefereePhone] = useState('');
+
+    // 10. 其他关键信息
+    const [extraInfo, setExtraInfo] = useState('');
 
     // 光标闪烁
     useEffect(() => {
@@ -126,6 +206,19 @@ export default function ResumeForm() {
     const companyName = targetCompany.trim() || '华为';
     const positionName = targetPosition.trim() || '前端开发工程师';
 
+    // 通用数组操作
+    const updateItem = useCallback((arr: any[], id: string, key: string, value: any) => {
+        return arr.map(item => item.id === id ? { ...item, [key]: value } : item);
+    }, []);
+
+    const addItem = useCallback((arr: any[], template: any) => {
+        return [...arr, { ...template, id: uid() }];
+    }, []);
+
+    const removeItem = useCallback((arr: any[], id: string) => {
+        return arr.filter(item => item.id !== id);
+    }, []);
+
     return (
         <div className="tab-pane fade-in-up resume-wrapper">
 
@@ -133,9 +226,17 @@ export default function ResumeForm() {
             <Section title="简历上传">
                 <div className="upload-box">
                     <h3>简历文档上传</h3>
-                    <button className="btn-upload-square">
-                        <Plus size={24} />
-                    </button>
+                    <FileUploadButton
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                        onChange={(file) => setResumeFileName(file ? file.name : '')}
+                    >
+                        <button className="btn-upload-square">
+                            <Plus size={24} />
+                        </button>
+                    </FileUploadButton>
+                    {resumeFileName && (
+                        <p style={{ marginTop: '8px', fontSize: '14px', color: '#3b82f6' }}>{resumeFileName}</p>
+                    )}
                     <p className="field-tip" style={{ justifyContent: 'center', marginTop: '12px' }}>
                         支持 PDF、Word、JPG 格式，大小不超过 10MB
                     </p>
@@ -146,22 +247,30 @@ export default function ResumeForm() {
             <Section title="个人信息">
                 <div className="field-group">
                     <label className="field-label">照片</label>
-                    <button className="btn-upload-square small">
-                        <Plus size={20} />
-                    </button>
+                    <FileUploadButton
+                        accept=".jpg,.jpeg,.png"
+                        onChange={(file) => setPhotoFileName(file ? file.name : '')}
+                    >
+                        <button className="btn-upload-square small">
+                            <Plus size={20} />
+                        </button>
+                    </FileUploadButton>
+                    {photoFileName && (
+                        <p style={{ marginTop: '8px', fontSize: '14px', color: '#3b82f6' }}>{photoFileName}</p>
+                    )}
                     <p className="field-tip">建议使用蓝底或白底证件照，展现专业形象</p>
                 </div>
 
-                <Field label="姓名" placeholder="请输入姓名" tip="请与身份证件上的姓名保持一致" />
+                <Field label="姓名" placeholder="请输入姓名" tip="请与身份证件上的姓名保持一致" value={name} onChange={(e: any) => setName(e.target.value)} />
 
                 <div className="field-group">
                     <label className="field-label">性别<span className="required">*</span></label>
                     <div className="radio-group">
                         <label className="radio-label">
-                            <input type="radio" name="gender" defaultChecked /> 男
+                            <input type="radio" name="gender" checked={gender === '男'} onChange={() => setGender('男')} /> 男
                         </label>
                         <label className="radio-label">
-                            <input type="radio" name="gender" /> 女
+                            <input type="radio" name="gender" checked={gender === '女'} onChange={() => setGender('女')} /> 女
                         </label>
                     </div>
                 </div>
@@ -170,45 +279,52 @@ export default function ResumeForm() {
                     <label className="field-label" style={{ fontWeight: 600, marginBottom: '12px', marginTop: '8px' }}>证件信息</label>
                 </div>
 
-                <Field label="国家/地区" placeholder="中国大陆" type="select" />
+                <Field label="国家/地区" placeholder="中国大陆" type="select" value={country} onChange={(e: any) => setCountry(e.target.value)} options={['中国大陆', '中国香港', '中国澳门', '中国台湾', '其他']} />
 
                 <div className="field-group">
                     <label className="field-label">个人证件<span className="required">*</span></label>
                     <div className="flex-row">
-                        <select className="field-input display-only" style={{ width: '140px' }}>
+                        <select className="field-input display-only" style={{ width: '140px' }} value={idType} onChange={(e) => setIdType(e.target.value)}>
                             <option>身份证</option>
                             <option>护照</option>
                         </select>
-                        <input type="text" className="field-input display-only flex-1" placeholder="请填写您的证件号码" readOnly />
+                        <input type="text" className="field-input display-only flex-1" placeholder="请填写您的证件号码" value={idNumber} onChange={(e) => setIdNumber(e.target.value)} />
                     </div>
                 </div>
 
-                <Field label="手机号码" placeholder="请填写您的手机号码" />
-                <Field label="邮箱" placeholder="请填写您的邮箱地址" tip="面试通知将通过邮件发送，请确保填写准确" />
+                <Field label="手机号码" placeholder="请填写您的手机号码" value={phone} onChange={(e: any) => setPhone(e.target.value)} />
+                <Field label="邮箱" placeholder="请填写您的邮箱地址" tip="面试通知将通过邮件发送，请确保填写准确" value={email} onChange={(e: any) => setEmail(e.target.value)} />
             </Section>
 
             {/* 3. 教育经历 */}
             <Section title="教育经历">
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>当前教育经历</span>
-                    </div>
-                    <Field label="学历" placeholder="请选择学历" type="select" />
-                    <Field label="学校名称" placeholder="请输入学校名称" />
-                    <Field label="目前就读地" placeholder="请选择目前就读地" type="select" />
-
-                    <div className="field-group">
-                        <label className="field-label">起止时间<span className="required">*</span></label>
-                        <div className="flex-row align-center gap-2">
-                            <input type="text" className="field-input display-only" placeholder="开始日期" readOnly />
-                            <span>-</span>
-                            <input type="text" className="field-input display-only" placeholder="结束日期" readOnly />
+                {educations.map((edu, index) => (
+                    <div className="experience-item" key={edu.id}>
+                        <div className="experience-header">
+                            <span>{index === 0 ? '当前教育经历' : `教育经历-${index + 1}`}</span>
+                            {educations.length > 1 && (
+                                <span className="action-link delete" onClick={() => setEducations(removeItem(educations, edu.id))}>
+                                    <Trash2 size={15} style={{ marginRight: '4px' }} /> 删除经历
+                                </span>
+                            )}
                         </div>
+                        <Field label="学历" placeholder="请选择学历" type="select" value={edu.degree} onChange={(e: any) => setEducations(updateItem(educations, edu.id, 'degree', e.target.value))} options={['高中生', '本科生', '研究生', '博士生']} />
+                        <Field label="学校名称" placeholder="请输入学校名称" value={edu.school} onChange={(e: any) => setEducations(updateItem(educations, edu.id, 'school', e.target.value))} />
+                        <Field label="目前就读地" placeholder="请输入目前就读地" value={edu.location} onChange={(e: any) => setEducations(updateItem(educations, edu.id, 'location', e.target.value))} />
+
+                        <div className="field-group">
+                            <label className="field-label">起止时间<span className="required">*</span></label>
+                            <div className="flex-row align-center gap-2">
+                                <input type="text" className="field-input display-only" placeholder="开始日期" value={edu.startDate} onChange={(e) => setEducations(updateItem(educations, edu.id, 'startDate', e.target.value))} />
+                                <span>-</span>
+                                <input type="text" className="field-input display-only" placeholder="结束日期" value={edu.endDate} onChange={(e) => setEducations(updateItem(educations, edu.id, 'endDate', e.target.value))} />
+                            </div>
+                        </div>
+                        <Field label="院系" placeholder="请输入院系" value={edu.department} onChange={(e: any) => setEducations(updateItem(educations, edu.id, 'department', e.target.value))} />
+                        <Field label="专业" placeholder="请输入专业" value={edu.major} onChange={(e: any) => setEducations(updateItem(educations, edu.id, 'major', e.target.value))} />
                     </div>
-                    <Field label="院系" placeholder="请输入院系" />
-                    <Field label="专业" placeholder="请输入专业" />
-                </div>
-                <div className="action-link">
+                ))}
+                <div className="action-link" onClick={() => setEducations(addItem(educations, { degree: '', school: '', location: '', startDate: '', endDate: '', department: '', major: '' }))}>
                     <Plus size={16} /> 添加教育经历
                 </div>
             </Section>
@@ -217,67 +333,85 @@ export default function ResumeForm() {
             <Section title="实习经历">
                 <div className="field-group" style={{ marginBottom: '24px' }}>
                     <label className="checkbox-label">
-                        <input type="checkbox" name="no-internship" /> 无实习经历
+                        <input type="checkbox" checked={noInternship} onChange={(e) => setNoInternship(e.target.checked)} /> 无实习经历
                     </label>
                 </div>
 
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>实习经历-1</span>
-                        <span className="action-link delete">
-                            <Trash2 size={15} style={{ marginRight: '4px' }} /> 删除经历
-                        </span>
-                    </div>
-                    <Field label="公司" placeholder="请输入实习公司" />
-                    <Field label="职位" placeholder="请输入职位" />
-                    <div className="field-group">
-                        <label className="field-label">描述</label>
-                        <textarea className="field-input display-only" rows={3} placeholder="请描述你的实习职责和主要成就" readOnly></textarea>
-                        <p className="field-tip">建议使用：动词 + 项目 + 结果 的方式描述</p>
-                    </div>
-                </div>
-                <div className="action-link">
-                    <Plus size={16} /> 添加实习经历
-                </div>
+                {!noInternship && (
+                    <>
+                        {internships.map((item, index) => (
+                            <div className="experience-item" key={item.id}>
+                                <div className="experience-header">
+                                    <span>实习经历-{index + 1}</span>
+                                    <span className="action-link delete" onClick={() => setInternships(removeItem(internships, item.id))}>
+                                        <Trash2 size={15} style={{ marginRight: '4px' }} /> 删除经历
+                                    </span>
+                                </div>
+                                <Field label="公司" placeholder="请输入实习公司" value={item.company} onChange={(e: any) => setInternships(updateItem(internships, item.id, 'company', e.target.value))} />
+                                <Field label="职位" placeholder="请输入职位" value={item.position} onChange={(e: any) => setInternships(updateItem(internships, item.id, 'position', e.target.value))} />
+                                <div className="field-group">
+                                    <label className="field-label">描述</label>
+                                    <textarea className="field-input display-only" rows={3} placeholder="请描述你的实习职责和主要成就" value={item.description} onChange={(e) => setInternships(updateItem(internships, item.id, 'description', e.target.value))}></textarea>
+                                    <p className="field-tip">建议使用：动词 + 项目 + 结果 的方式描述</p>
+                                </div>
+                            </div>
+                        ))}
+                        <div className="action-link" onClick={() => setInternships(addItem(internships, { company: '', position: '', description: '' }))}>
+                            <Plus size={16} /> 添加实习经历
+                        </div>
+                    </>
+                )}
             </Section>
 
             {/* 5. 项目经历 */}
             <Section title="项目经历">
                 <div className="field-group">
                     <label className="checkbox-label">
-                        <input type="checkbox" /> 无项目经历
+                        <input type="checkbox" checked={noProject} onChange={(e) => setNoProject(e.target.checked)} /> 无项目经历
                     </label>
                 </div>
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>项目经历-1</span>
-                        <span className="action-link delete"><Trash2 size={15} /> 删除项目</span>
-                    </div>
-                    <Field label="项目名称" placeholder="请输入项目名称" />
-                    <Field label="担任角色" placeholder="例如：前端负责人、算法实习生" />
-                    <div className="field-group">
-                        <label className="field-label">项目描述</label>
-                        <textarea className="field-input display-only" rows={3} placeholder="请输入项目背景及你的贡献" readOnly></textarea>
-                    </div>
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加项目经历</div>
+                {!noProject && (
+                    <>
+                        {projects.map((item, index) => (
+                            <div className="experience-item" key={item.id}>
+                                <div className="experience-header">
+                                    <span>项目经历-{index + 1}</span>
+                                    <span className="action-link delete" onClick={() => setProjects(removeItem(projects, item.id))}><Trash2 size={15} /> 删除项目</span>
+                                </div>
+                                <Field label="项目名称" placeholder="请输入项目名称" value={item.name} onChange={(e: any) => setProjects(updateItem(projects, item.id, 'name', e.target.value))} />
+                                <Field label="担任角色" placeholder="例如：前端负责人、算法实习生" value={item.role} onChange={(e: any) => setProjects(updateItem(projects, item.id, 'role', e.target.value))} />
+                                <div className="field-group">
+                                    <label className="field-label">项目描述</label>
+                                    <textarea className="field-input display-only" rows={3} placeholder="请输入项目背景及你的贡献" value={item.description} onChange={(e) => setProjects(updateItem(projects, item.id, 'description', e.target.value))}></textarea>
+                                </div>
+                            </div>
+                        ))}
+                        <div className="action-link" onClick={() => setProjects(addItem(projects, { name: '', role: '', description: '' }))}><Plus size={16} /> 添加项目经历</div>
+                    </>
+                )}
             </Section>
 
             {/* 6. 获奖信息 */}
             <Section title="获奖信息">
                 <div className="field-group">
-                    <label className="checkbox-label"><input type="checkbox" /> 无获奖信息</label>
+                    <label className="checkbox-label"><input type="checkbox" checked={noAward} onChange={(e) => setNoAward(e.target.checked)} /> 无获奖信息</label>
                 </div>
-                <div className="experience-item">
-                    <div className="experience-header">
-                        <span>获奖信息-1</span>
-                        <span className="action-link delete"><Trash2 size={15} /> 删除</span>
-                    </div>
-                    <Field label="获奖类型" placeholder="请选择" type="select" />
-                    <Field label="奖项名称" placeholder="请输入完整奖项名称" />
-                    <Field label="获奖时间" placeholder="选择日期" />
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加获奖信息</div>
+                {!noAward && (
+                    <>
+                        {awards.map((item, index) => (
+                            <div className="experience-item" key={item.id}>
+                                <div className="experience-header">
+                                    <span>获奖信息-{index + 1}</span>
+                                    <span className="action-link delete" onClick={() => setAwards(removeItem(awards, item.id))}><Trash2 size={15} /> 删除</span>
+                                </div>
+                                <Field label="获奖类型" placeholder="请选择" type="select" value={item.type} onChange={(e: any) => setAwards(updateItem(awards, item.id, 'type', e.target.value))} options={['国奖', '赛区奖', '市奖']} />
+                                <Field label="奖项名称" placeholder="请输入完整奖项名称" value={item.name} onChange={(e: any) => setAwards(updateItem(awards, item.id, 'name', e.target.value))} />
+                                <Field label="获奖时间" placeholder="选择日期" value={item.time} onChange={(e: any) => setAwards(updateItem(awards, item.id, 'time', e.target.value))} />
+                            </div>
+                        ))}
+                        <div className="action-link" onClick={() => setAwards(addItem(awards, { type: '', name: '', time: '' }))}><Plus size={16} /> 添加获奖信息</div>
+                    </>
+                )}
             </Section>
 
             {/* 7. 技能信息 */}
@@ -285,19 +419,19 @@ export default function ResumeForm() {
                 <div className="field-group">
                     <label className="field-label">外语考试/等级</label>
                     <div className="flex-row">
-                        <select className="field-input display-only" style={{ width: '180px' }}>
-                            <option>请选择考试类型</option>
+                        <select className="field-input display-only" style={{ width: '180px' }} value={examType} onChange={(e) => setExamType(e.target.value)}>
+                            <option value="">请选择考试类型</option>
                             <option>CET-4</option>
                             <option>CET-6</option>
                             <option>IELTS</option>
                         </select>
-                        <input type="text" className="field-input display-only flex-1" placeholder="请填写分数/等级" readOnly />
+                        <input type="text" className="field-input display-only flex-1" placeholder="请填写分数/等级" value={examScore} onChange={(e) => setExamScore(e.target.value)} />
                     </div>
                 </div>
-                <Field label="掌握语言" placeholder="例如：Java, Python, JavaScript" tip="多个语言请用逗号分隔" />
+                <Field label="掌握语言" placeholder="例如：Java, Python, JavaScript" tip="多个语言请用逗号分隔" value={languages} onChange={(e: any) => setLanguages(e.target.value)} />
                 <div className="field-group">
                     <label className="field-label">AI应用技能</label>
-                    <textarea className="field-input display-only" rows={2} placeholder="描述你熟悉的AI工具（如 ChatGPT, Midjourney, Copilot）及应用场景" readOnly></textarea>
+                    <textarea className="field-input display-only" rows={2} placeholder="描述你熟悉的AI工具（如 ChatGPT, Midjourney, Copilot）及应用场景" value={aiSkills} onChange={(e) => setAiSkills(e.target.value)}></textarea>
                 </div>
             </Section>
 
@@ -305,33 +439,48 @@ export default function ResumeForm() {
             <Section title="作品或个人主页">
                 <div className="upload-box" style={{ padding: '30px 0', marginBottom: '20px' }}>
                     <p style={{ marginBottom: '12px', fontSize: '14px', color: '#64748b' }}>上传您的作品集或其他证明附件</p>
-                    <button className="btn-upload-square">
-                        <Plus size={24} />
-                    </button>
+                    <FileUploadButton
+                        accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.zip,.rar"
+                        onChange={(file) => setPortfolioFileName(file ? file.name : '')}
+                    >
+                        <button className="btn-upload-square">
+                            <Plus size={24} />
+                        </button>
+                    </FileUploadButton>
+                    {portfolioFileName && (
+                        <p style={{ marginTop: '8px', fontSize: '14px', color: '#3b82f6' }}>{portfolioFileName}</p>
+                    )}
                 </div>
-                <div className="field-group">
-                    <label className="field-label">个人主页/作品链接</label>
-                    <div className="flex-row align-center">
-                        <LinkIcon size={18} color="#3b82f6" />
-                        <input type="text" className="field-input display-only flex-1" placeholder="GitHub, 个人博客或作品在线预览链接" readOnly />
+                {portfolioLinks.map((link, index) => (
+                    <div className="field-group" key={link.id}>
+                        <label className="field-label">个人主页/作品链接 {portfolioLinks.length > 1 ? index + 1 : ''}</label>
+                        <div className="flex-row align-center">
+                            <LinkIcon size={18} color="#3b82f6" />
+                            <input type="text" className="field-input display-only flex-1" placeholder="GitHub, 个人博客或作品在线预览链接" value={link.url} onChange={(e) => setPortfolioLinks(updateItem(portfolioLinks, link.id, 'url', e.target.value))} />
+                            {portfolioLinks.length > 1 && (
+                                <span className="action-link delete" onClick={() => setPortfolioLinks(removeItem(portfolioLinks, link.id))}>
+                                    <Trash2 size={15} />
+                                </span>
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div className="action-link"><Plus size={16} /> 添加链接</div>
+                ))}
+                <div className="action-link" onClick={() => setPortfolioLinks(addItem(portfolioLinks, { url: '' }))}><Plus size={16} /> 添加链接</div>
             </Section>
 
             {/* 9. 资料证明人 */}
             <Section title="资料证明人">
                 <p className="field-tip" style={{ marginBottom: '20px' }}>请提供 1-2 位可以核实您背景信息的推荐人</p>
-                <Field label="证明人姓名" placeholder="姓名" />
-                <Field label="证明人身份" placeholder="例如：导师、直属主管" />
-                <Field label="联系电话" placeholder="联系电话" />
+                <Field label="证明人姓名" placeholder="姓名" value={refereeName} onChange={(e: any) => setRefereeName(e.target.value)} />
+                <Field label="证明人身份" placeholder="例如：导师、直属主管" value={refereeRole} onChange={(e: any) => setRefereeRole(e.target.value)} />
+                <Field label="联系电话" placeholder="联系电话" value={refereePhone} onChange={(e: any) => setRefereePhone(e.target.value)} />
             </Section>
 
             {/* 10. 其他关键信息 */}
             <Section title="其他关键信息">
                 <div className="field-group">
                     <label className="field-label">补充信息</label>
-                    <textarea className="field-input display-only" rows={4} placeholder="你可以补充任何你想让面试官了解的信息，如：特殊的兴趣爱好、性格优势等" readOnly></textarea>
+                    <textarea className="field-input display-only" rows={4} placeholder="你可以补充任何你想让面试官了解的信息，如：特殊的兴趣爱好、性格优势等" value={extraInfo} onChange={(e) => setExtraInfo(e.target.value)}></textarea>
                 </div>
             </Section>
 

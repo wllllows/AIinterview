@@ -39,7 +39,7 @@ export default function Header() {
                 <div className="header-inner">
                     <div className="left">
                         <div className="logo" onClick={() => navigate('/app')} style={{ cursor: 'pointer' }}>
-                            AIInterview
+                            SquareConf
                         </div>
                         <nav className="nav">
                             <NavLink to="/app" end>首页</NavLink>
