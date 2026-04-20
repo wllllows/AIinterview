@@ -1,10 +1,39 @@
 // Login.tsx
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
+// Easing function for smooth scroll (ease-in-out cubic)
+function easeInOutCubic(t: number): number {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+}
+
+// Custom smooth scroll with easing
+function smoothScrollTo(targetY: number, duration = 4000) {
+    const startY = window.scrollY || document.documentElement.scrollTop || 0;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 2) return;
+
+    const startTime = Date.now();
+    const timer = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = easeInOutCubic(progress);
+        const currentY = Math.round(startY + distance * ease);
+        document.documentElement.scrollTop = currentY;
+        document.body.scrollTop = currentY;
+        if (progress >= 1) {
+            clearInterval(timer);
+        }
+    }, 16);
+}
+
 export default function Login() {
     const navigate = useNavigate();
+    const [showLoginModal, setShowLoginModal] = useState(false);
+    const [phone, setPhone] = useState('');
+    const [code, setCode] = useState('');
+    const [countdown, setCountdown] = useState(0);
 
     useEffect(() => {
         // Navigation scroll effect
@@ -22,44 +51,6 @@ export default function Login() {
         };
 
         window.addEventListener('scroll', handleNavScroll);
-
-        // Easing function for smooth scroll (ease-out cubic)
-        function easeOutCubic(t: number): number {
-            return 1 - Math.pow(1 - t, 3);
-        }
-
-        // Custom smooth scroll with easing
-        function smoothScrollTo(targetY: number, duration = 4000) {
-            const startY = window.pageYOffset;
-            const distance = targetY - startY;
-            const startTime = Date.now();
-
-            function scroll() {
-                const currentTime = Date.now() - startTime;
-                const progress = Math.min(currentTime / duration, 1);
-                const ease = easeOutCubic(progress);
-                window.scrollTo(0, startY + distance * ease);
-
-                if (progress < 1) {
-                    requestAnimationFrame(scroll);
-                }
-            }
-
-            requestAnimationFrame(scroll);
-        }
-
-        // Hero CTA button - scroll to bottom with easing
-        const heroCtaBtn = document.querySelector('.login-hero-cta-btn');
-        if (heroCtaBtn) {
-            heroCtaBtn.addEventListener('click', function(e: Event) {
-                e.preventDefault();
-                const footer = document.getElementById('where');
-                if (footer) {
-                    const footerTop = footer.offsetTop;
-                    smoothScrollTo(footerTop, 4000);
-                }
-            });
-        }
 
         // Scroll reveal animations
         const observerOptions = {
@@ -98,11 +89,6 @@ export default function Login() {
             const target = e.target as HTMLAnchorElement;
             const href = target.getAttribute('href');
             
-            // Skip hero-cta-btn as it has its own handler
-            if (target.classList.contains('login-hero-cta-btn')) {
-                return;
-            }
-            
             if (href) {
                 e.preventDefault();
                 const element = document.querySelector(href);
@@ -134,9 +120,6 @@ export default function Login() {
                 anchor.removeEventListener('click', handleAnchorClick);
             });
             observer.disconnect();
-            if (heroCtaBtn) {
-                heroCtaBtn.removeEventListener('click', handleAnchorClick);
-            }
             if (videoThumb) {
                 videoThumb.removeEventListener('click', handleAnchorClick);
             }
@@ -152,11 +135,34 @@ export default function Login() {
 
     const handleHeroCtaClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
-        // 平滑滚动到页面底部
-        const footer = document.getElementById('where');
-        if (footer) {
-            footer.scrollIntoView({ behavior: 'smooth' });
+        setShowLoginModal(true);
+    };
+
+    const handleSendCode = () => {
+        if (!phone.trim() || countdown > 0) return;
+        setCountdown(60);
+        const timer = setInterval(() => {
+            setCountdown(prev => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    const handleLoginSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!phone.trim() || !code.trim()) {
+            alert('请填写手机号和验证码');
+            return;
         }
+        setShowLoginModal(false);
+        setTimeout(() => {
+            const targetY = document.documentElement.scrollHeight - window.innerHeight;
+            smoothScrollTo(targetY, 4000);
+        }, 500);
     };
 
     const toggleMenu = () => {
@@ -222,7 +228,7 @@ export default function Login() {
                         <a href="#philosophy">了解模拟场景</a>
                     </div>
                 </div>
-                <a href="#where" onClick={handleHeroCtaClick} className="login-hero-cta-btn">立即开始</a>
+                <a href="#" onClick={handleHeroCtaClick} className="login-hero-cta-btn">立即开始</a>
             </section>
 
             {/* Philosophy Section */}
@@ -431,6 +437,52 @@ export default function Login() {
                     </div>
                 </div>
             </section>
+
+            {/* Login Modal */}
+            {showLoginModal && (
+                <div className="login-modal-overlay" onClick={() => setShowLoginModal(false)}>
+                    <div className="login-modal-panel" onClick={(e) => e.stopPropagation()}>
+                        <button className="login-modal-close" onClick={() => setShowLoginModal(false)}>✕</button>
+                        <h2 className="login-modal-title">注册 / 登录</h2>
+                        <p className="login-modal-subtitle">欢迎回到智面AI</p>
+                        <form className="login-modal-form" onSubmit={handleLoginSubmit}>
+                            <div className="login-modal-field">
+                                <label>手机号</label>
+                                <input
+                                    type="tel"
+                                    placeholder="请输入手机号"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                    maxLength={11}
+                                />
+                            </div>
+                            <div className="login-modal-field">
+                                <label>验证码</label>
+                                <div className="login-modal-code-row">
+                                    <input
+                                        type="text"
+                                        placeholder="请输入验证码"
+                                        value={code}
+                                        onChange={(e) => setCode(e.target.value)}
+                                        maxLength={6}
+                                    />
+                                    <button
+                                        type="button"
+                                        className="login-modal-send-btn"
+                                        onClick={handleSendCode}
+                                        disabled={countdown > 0}
+                                    >
+                                        {countdown > 0 ? `${countdown}s 后重发` : '获取验证码'}
+                                    </button>
+                                </div>
+                            </div>
+                            <button type="submit" className="login-modal-submit">
+                                立即注册 / 登录
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
 
             {/* Footer */}
             <footer className="login-footer" id="where">
